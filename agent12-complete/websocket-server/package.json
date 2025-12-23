@@ -1,0 +1,32 @@
+{
+  "name": "agent12-websocket-server",
+  "version": "1.0.0",
+  "description": "WebSocket server for Agent12 voice connections",
+  "main": "dist/index.js",
+  "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "lint": "eslint src --ext .ts",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "ws": "^8.18.0",
+    "express": "^4.19.2",
+    "dotenv": "^16.4.5",
+    "twilio": "^5.3.2",
+    "axios": "^1.7.7",
+    "@supabase/supabase-js": "^2.45.0",
+    "winston": "^3.14.2"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.5.12",
+    "@types/express": "^4.17.21",
+    "@types/node": "^20.16.5",
+    "typescript": "^5.6.2",
+    "ts-node-dev": "^2.0.0",
+    "eslint": "^8.57.1",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
+    "@typescript-eslint/parser": "^6.21.0"
+  }
+}
