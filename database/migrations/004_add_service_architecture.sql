@@ -512,6 +512,30 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   ARRAY['voice_receptionist'],
   '{"type": "object", "properties": {"pos_integration": {"type": "string", "enum": ["square", "toast", "clover", "lightspeed", "none"]}, "menu_url": {"type": "string"}, "upsell_enabled": {"type": "boolean"}, "modify_enabled": {"type": "boolean"}, "special_requests": {"type": "boolean"}, "payment_by_phone": {"type": "boolean"}, "auto_confirm_order": {"type": "boolean"}, "send_confirmation_sms": {"type": "boolean"}}}'::jsonb,
   '{"pos_integration": "none", "menu_url": "", "upsell_enabled": true, "modify_enabled": true, "special_requests": true, "payment_by_phone": false, "auto_confirm_order": false, "send_confirmation_sms": true}'::jsonb
+),
+
+-- Service 19: Embeddable Booking/Order Widget
+('embeddable_widget', 'Embeddable Booking Widget', 'Add a booking/ordering widget to your existing website. Works with any site - WordPress, Squarespace, Wix, custom sites. One line of code. Mobile-optimized.', 'web', 'standard', 'Code', true,
+  '{"type": "per_booking", "price": 0.25}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"widget_type": {"type": "string", "enum": ["booking", "ordering", "contact", "quote_request"]}, "custom_css": {"type": "boolean"}, "branding": {"type": "boolean"}, "fields": {"type": "array", "items": {"type": "string"}}, "auto_confirm": {"type": "boolean"}, "payment_enabled": {"type": "boolean"}, "calendar_sync": {"type": "boolean"}, "notification_email": {"type": "string"}}}'::jsonb,
+  '{"widget_type": "booking", "custom_css": true, "branding": false, "fields": ["name", "email", "phone", "service", "date", "time"], "auto_confirm": false, "payment_enabled": false, "calendar_sync": true, "notification_email": ""}'::jsonb
+),
+
+-- Service 20: Auto-Website Builder & Hosting
+('auto_website', 'AI-Built Website & Hosting', 'AI generates a professional website for your business in minutes. SEO-optimized, mobile-responsive, integrated with all your AgentFlow services. Hosting included.', 'web', 'standard', 'Globe', false,
+  '{"type": "monthly", "price": 25.00}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"template": {"type": "string", "enum": ["restaurant", "contractor", "medical", "retail", "professional_services", "custom"]}, "pages": {"type": "array", "items": {"type": "string"}}, "custom_domain": {"type": "boolean"}, "domain_name": {"type": "string"}, "seo_enabled": {"type": "boolean"}, "blog_enabled": {"type": "boolean"}, "online_booking": {"type": "boolean"}, "online_ordering": {"type": "boolean"}, "contact_form": {"type": "boolean"}, "live_chat": {"type": "boolean"}, "google_analytics": {"type": "boolean"}}}'::jsonb,
+  '{"template": "professional_services", "pages": ["home", "about", "services", "contact"], "custom_domain": false, "domain_name": "", "seo_enabled": true, "blog_enabled": false, "online_booking": true, "online_ordering": false, "contact_form": true, "live_chat": false, "google_analytics": true}'::jsonb
+),
+
+-- Service 21: Website Management & Updates
+('website_management', 'Website Management', 'We keep your website updated, backed up, and secure. Content updates, image changes, menu updates - just send us what you need changed.', 'web', 'standard', 'Settings', false,
+  '{"type": "monthly", "price": 15.00}'::jsonb,
+  ARRAY['auto_website'],
+  '{"type": "object", "properties": {"update_requests_per_month": {"type": "number"}, "priority_support": {"type": "boolean"}, "content_refresh": {"type": "boolean"}, "image_optimization": {"type": "boolean"}, "backup_frequency": {"type": "string", "enum": ["daily", "weekly", "monthly"]}, "security_monitoring": {"type": "boolean"}}}'::jsonb,
+  '{"update_requests_per_month": 5, "priority_support": false, "content_refresh": true, "image_optimization": true, "backup_frequency": "weekly", "security_monitoring": true}'::jsonb
 );
 
 -- ========================================
