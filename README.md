@@ -4,7 +4,7 @@ Agent12 is a modular multi-service platform that helps small businesses automate
 
 ## Services
 
-Agent12 offers three independent services that can be enabled individually:
+Agent12 offers four independent services that can be enabled individually:
 
 ### Service 1: AI Voice Receptionist ✅
 - **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
@@ -24,7 +24,7 @@ Agent12 offers three independent services that can be enabled individually:
   - 🏢 Industry-specific templates (dental, HVAC, restaurants, salons, etc.)
   - 📊 Call analytics and transcripts
 
-### Service 2: SMS Autoresponder ✅
+### Service 2: SMS Autoresponder (Standalone) ✅
 - **Description**: Automatically respond to incoming text messages with AI or custom templates
 - **Pricing**: $1.00 per response
 - **Value Proposition**:
@@ -40,7 +40,22 @@ Agent12 offers three independent services that can be enabled individually:
   - ⏰ Works 24/7, even when you're closed
   - 📱 Full SMS conversation tracking
 
-### Service 3: Missed Call Responder ✅
+### Service 3: SMS Autoresponder (Add-on) ✅
+- **Description**: Same SMS autoresponder functionality, discounted when bundled with AI Voice Receptionist
+- **Pricing**: $0.50 per response (50% discount)
+- **Requirement**: Must have AI Voice Receptionist service enabled
+- **Value Proposition**:
+  - 🎁 **50% discount** when you bundle with Voice Receptionist
+  - 🔗 Seamless integration with your voice service
+  - 📞 Text customers who called + respond to direct texts
+  - 💰 Complete communication solution at the best price
+  - 🎯 **Bundle and save** - perfect for businesses using both channels
+- **Features**:
+  - Same features as standalone SMS Autoresponder
+  - Integrated with call logs and voice service
+  - Unified customer communication tracking
+
+### Service 4: Missed Call Responder ✅
 - **Description**: Automatically send SMS to callers when their call goes unanswered
 - **Pricing**: $1.50 per call
 - **Value Proposition**:
@@ -235,11 +250,14 @@ Our prices reflect what it's worth to never miss a customer, respond instantly t
 **Pay-per-use model** - no monthly fees, no contracts, only pay for what you use:
 
 ### Service Pricing
-- **AI Voice Receptionist**:
+- **Service 1 - AI Voice Receptionist**:
   - Base: $2.00 per minute
   - With Industry Templates: $2.75 per minute (+$0.75/min add-on)
-- **SMS Autoresponder**: $1.00 per response sent
-- **Missed Call Responder**: $1.50 per missed call
+- **Service 2 - SMS Autoresponder (Standalone)**: $1.00 per response
+- **Service 3 - SMS Autoresponder (Add-on)**: $0.50 per response
+  - Requires AI Voice Receptionist service
+  - 50% discount when bundled
+- **Service 4 - Missed Call Responder**: $1.50 per missed call
 
 **Industry Templates Available For:**
 - Dental Offices

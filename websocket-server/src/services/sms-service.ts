@@ -57,31 +57,22 @@ export class SMSService {
         .select()
         .single();
 
-      // Check if SMS autoresponder is enabled for this user
-      const { data: userService } = await supabase
+      // Check if SMS autoresponder is enabled for this user (standalone or bundled)
+      const { data: userServices } = await supabase
         .from('user_services')
-        .select('id, enabled, config, service_id')
+        .select('id, enabled, config, service_id, services(service_key, usage_price_model)')
         .eq('user_id', userId)
         .eq('enabled', true)
-        .limit(1)
-        .single();
+        .in('services.service_key', ['sms_autoresponder_standalone', 'sms_autoresponder_bundled']);
 
-      if (!userService) {
+      if (!userServices || userServices.length === 0) {
         logger.info(`SMS autoresponder not enabled for user ${userId}`);
         return null;
       }
 
-      // Get service details
-      const { data: service } = await supabase
-        .from('services')
-        .select('*')
-        .eq('service_key', 'sms_autoresponder')
-        .single();
-
-      if (!service || userService.service_id !== service.id) {
-        logger.info(`SMS autoresponder service not found or mismatch`);
-        return null;
-      }
+      // Use the first enabled service (prefer bundled if both are enabled)
+      const userService = userServices.find((s: any) => s.services?.service_key === 'sms_autoresponder_bundled') || userServices[0];
+      const service = userService.services;
 
       const config = userService.config as any;
 
@@ -98,6 +89,7 @@ export class SMSService {
           .select('*')
           .eq('id', config.template_id)
           .eq('user_id', userId)
+          .in('service_key', ['sms_autoresponder_standalone', 'sms_autoresponder_bundled'])
           .single();
 
         if (template) {
@@ -129,10 +121,10 @@ export class SMSService {
         cost_usd: Math.abs(parseFloat(smsResult.price || '0')),
       });
 
-      // Log service usage for billing
+      // Log service usage for billing (use the actual service key)
       await supabase.rpc('log_service_usage', {
         p_user_id: userId,
-        p_service_key: 'sms_autoresponder',
+        p_service_key: service.service_key,
         p_usage_type: 'sms',
         p_quantity: 1,
         p_metadata: {
@@ -198,6 +190,7 @@ export class SMSService {
           .select('*')
           .eq('id', config.template_id)
           .eq('user_id', userId)
+          .in('service_key', ['sms_autoresponder_standalone', 'sms_autoresponder_bundled'])
           .single();
 
         if (template) {

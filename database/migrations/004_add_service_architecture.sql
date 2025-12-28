@@ -368,25 +368,36 @@ $$ LANGUAGE plpgsql;
 -- 8. SEED DATA - Initial Services
 -- ========================================
 
-INSERT INTO services (service_key, name, description, category, tier, icon, usage_based, usage_price_model, config_schema, default_config) VALUES
+INSERT INTO services (service_key, name, description, category, tier, icon, usage_based, usage_price_model, requires_services, config_schema, default_config) VALUES
 
 -- Service 1: AI Voice Receptionist
 ('voice_receptionist', 'AI Voice Receptionist', 'AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries.', 'core', 'standard', 'Phone', true,
   '{"type": "per_minute", "price": 2.00}'::jsonb,
+  NULL,
   '{"type": "object", "properties": {"voice_model": {"type": "string", "enum": ["Ara", "Eve", "Leo"]}, "system_prompt": {"type": "string"}}}'::jsonb,
   '{"voice_model": "Ara", "system_prompt": "You are a helpful voice assistant."}'::jsonb
 ),
 
--- Service 2: SMS Autoresponder
-('sms_autoresponder', 'SMS Autoresponder', 'Automatically respond to incoming text messages with AI or custom templates.', 'communication', 'standard', 'MessageSquare', true,
+-- Service 2: SMS Autoresponder (Standalone)
+('sms_autoresponder_standalone', 'SMS Autoresponder (Standalone)', 'Automatically respond to incoming text messages with AI or custom templates. Full price standalone service.', 'communication', 'standard', 'MessageSquare', true,
   '{"type": "per_sms", "price": 1.00}'::jsonb,
+  NULL,
   '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "template_id": {"type": "string"}, "ai_powered": {"type": "boolean"}}}'::jsonb,
   '{"auto_reply": true, "ai_powered": false}'::jsonb
 ),
 
--- Service 3: Missed Call Responder
+-- Service 3: SMS Autoresponder (Bundled with Voice Receptionist) - REQUIRES voice_receptionist
+('sms_autoresponder_bundled', 'SMS Autoresponder (Add-on)', 'Automatically respond to incoming text messages. Discounted 50% rate when bundled with AI Voice Receptionist.', 'communication', 'standard', 'MessageSquare', true,
+  '{"type": "per_sms", "price": 0.50}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "template_id": {"type": "string"}, "ai_powered": {"type": "boolean"}}}'::jsonb,
+  '{"auto_reply": true, "ai_powered": false}'::jsonb
+),
+
+-- Service 4: Missed Call Responder
 ('missed_call_responder', 'Missed Call Responder', 'Automatically send SMS to callers when their call goes unanswered.', 'communication', 'standard', 'PhoneMissed', true,
   '{"type": "per_call", "price": 1.50}'::jsonb,
+  NULL,
   '{"type": "object", "properties": {"enabled_hours": {"type": "string"}, "template_id": {"type": "string"}, "delay_seconds": {"type": "number"}}}'::jsonb,
   '{"enabled_hours": "24/7", "delay_seconds": 30}'::jsonb
 );
