@@ -293,6 +293,37 @@ category: 'communication'
 6. **Testing**: Test enable/disable flows
 7. **Billing**: Always log usage with metadata
 
+## UX Principles (CRITICAL)
+
+**The platform is powerful. The experience must be dead simple.**
+
+### For Every Service You Build:
+
+1. **Smart Defaults** - Service works immediately when enabled, no required configuration
+2. **Progressive Disclosure** - Hide advanced settings behind "Advanced" sections
+3. **Plain English** - Describe what the service does like you're talking to your mom
+4. **One-Click Enable** - Toggle switch, not a 10-step wizard
+5. **Real-Time Feedback** - Show usage/costs immediately, not next billing cycle
+6. **No Jargon** - "AI-powered smart responses" not "LLM-based NLP engine"
+7. **Visual Examples** - Show what the service does, don't just tell
+
+### Bad UX:
+```
+"Configure your LLM parameters for optimal sentiment classification
+thresholds across multi-dimensional vector embeddings..."
+```
+
+### Good UX:
+```
+"Get alerts when customers sound upset on calls.
+🔘 Enable Alerts"
+```
+
+**If your grandmother can't figure it out in 30 seconds, simplify it.**
+
+Small business owners are busy. They don't have time for complexity.
+They want solutions that just work.
+
 ## Future Expansion Ideas
 
 - **Appointment Reminders**: Automated reminder calls/SMS

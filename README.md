@@ -10,12 +10,17 @@ Agent12 is a modular platform built FOR small businesses, BY people who understa
 
 Just honest, transparent automation that saves you money and helps you grow.
 
-## How It Works
+## How It Works (Ridiculously Simple)
 
-**1. Start Simple** - Pick one service that solves your biggest pain point
-**2. Add What Helps** - Enable more services when you're ready
-**3. Upgrade Smartly** - Add optional enhancements only if you need them
-**4. Pay As You Go** - Usage-based pricing. No waste.
+**1. Pick** - Click a service. Read what it does in plain English.
+**2. Enable** - Flip the switch. It works immediately.
+**3. Done** - See your usage and costs in real-time.
+
+**No complicated setup. No technical jargon. No 45-minute onboarding calls.**
+
+Services come with smart defaults. They just work. Advanced settings are there if you want them, hidden if you don't.
+
+Your grandma could set this up. (But she probably doesn't need an AI receptionist.)
 
 ### Real Examples
 
