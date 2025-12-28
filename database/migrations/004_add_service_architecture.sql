@@ -466,20 +466,20 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   '{"business_hours": {"mon-fri": "9am-5pm"}, "holiday_schedule": [], "after_hours_action": "voicemail", "forward_number": ""}'::jsonb
 ),
 
--- Service 13: Email Autoresponder (Standalone)
-('email_autoresponder_standalone', 'Email Autoresponder (Standalone)', 'Automatically respond to customer emails with AI or custom templates. Monitor your business email 24/7.', 'communication', 'standard', 'Mail', true,
+-- Service 13: Email Assistant (Standalone)
+('email_assistant_standalone', 'Email Assistant (Standalone)', 'AI-powered email management: auto-sort incoming emails, draft intelligent responses, and auto-reply or send drafts for approval.', 'communication', 'standard', 'Mail', true,
   '{"type": "per_email", "price": 0.50}'::jsonb,
   NULL,
-  '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}, "categorize": {"type": "boolean"}}}'::jsonb,
-  '{"auto_reply": true, "ai_powered": false, "template_id": "", "forward_to": [], "categorize": true}'::jsonb
+  '{"type": "object", "properties": {"auto_sort": {"type": "boolean"}, "categories": {"type": "array", "items": {"type": "string"}}, "auto_draft": {"type": "boolean"}, "auto_send": {"type": "boolean"}, "require_approval": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
+  '{"auto_sort": true, "categories": ["sales", "support", "urgent", "spam"], "auto_draft": true, "auto_send": false, "require_approval": true, "ai_powered": true, "template_id": "", "forward_to": []}'::jsonb
 ),
 
--- Service 14: Email Autoresponder (Bundled)
-('email_autoresponder_bundled', 'Email Autoresponder (Add-on)', 'Email autoresponder at 50% discount when bundled with AI Voice Receptionist.', 'communication', 'standard', 'Mail', true,
+-- Service 14: Email Assistant (Bundled)
+('email_assistant_bundled', 'Email Assistant (Add-on)', 'Complete email management at 50% discount when bundled with AI Voice Receptionist. Sort, draft, and respond automatically.', 'communication', 'standard', 'Mail', true,
   '{"type": "per_email", "price": 0.25}'::jsonb,
   ARRAY['voice_receptionist'],
-  '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}, "categorize": {"type": "boolean"}}}'::jsonb,
-  '{"auto_reply": true, "ai_powered": false, "template_id": "", "forward_to": [], "categorize": true}'::jsonb
+  '{"type": "object", "properties": {"auto_sort": {"type": "boolean"}, "categories": {"type": "array", "items": {"type": "string"}}, "auto_draft": {"type": "boolean"}, "auto_send": {"type": "boolean"}, "require_approval": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
+  '{"auto_sort": true, "categories": ["sales", "support", "urgent", "spam"], "auto_draft": true, "auto_send": false, "require_approval": true, "ai_powered": true, "template_id": "", "forward_to": []}'::jsonb
 );
 
 -- ========================================
