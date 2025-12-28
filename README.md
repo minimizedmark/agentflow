@@ -275,6 +275,58 @@ Our prices reflect what it's worth to never miss a customer, respond instantly t
 - Track spending in real-time from the dashboard
 - Never worry about surprise bills
 
+## Adding New Services
+
+The Agent12 platform is built with an **extensible service architecture**. Adding new services is simple and requires no changes to core infrastructure.
+
+### How to Add a New Service
+
+1. **Define the service in the database:**
+```sql
+INSERT INTO services (service_key, name, description, category, tier, icon, usage_based, usage_price_model, requires_services, config_schema, default_config)
+VALUES (
+  'your_service_key',
+  'Your Service Name',
+  'Service description',
+  'communication', -- or 'core', 'intelligence', 'automation', 'integration', 'enterprise'
+  'standard',
+  'IconName', -- Lucide icon name
+  true,
+  '{"type": "per_usage", "price": 1.00}'::jsonb,
+  ARRAY['required_service_key'], -- or NULL if no dependencies
+  '{"type": "object", "properties": {...}}'::jsonb,
+  '{"default_setting": "value"}'::jsonb
+);
+```
+
+2. **Implement the service logic** (if needed):
+   - Add handler in `websocket-server/src/services/`
+   - Wire up webhook endpoints in `index.ts`
+   - Use `log_service_usage()` for billing
+
+3. **Users can now enable it** from the dashboard!
+
+### Example Future Services
+
+Ideas for services that could be added:
+- **Appointment Reminders** ($0.25/reminder)
+- **Call Recording & Transcription** ($0.50/call)
+- **Sentiment Analysis** ($0.10/call)
+- **Multi-language Support** ($1.00/min add-on)
+- **CRM Integration** ($25/month)
+- **Analytics Dashboard** ($15/month)
+- **Voicemail to Email** ($0.10/voicemail)
+- **Custom Workflows** ($50/month)
+
+The architecture supports:
+- ✅ Usage-based pricing (per call, per minute, per SMS, etc.)
+- ✅ Monthly subscriptions
+- ✅ Add-ons and upgrades
+- ✅ Service dependencies
+- ✅ Service conflicts
+- ✅ Custom configuration schemas
+- ✅ Automatic billing integration
+
 ## Development
 
 ### Build all packages:
