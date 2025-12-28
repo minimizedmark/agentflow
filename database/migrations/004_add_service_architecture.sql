@@ -480,6 +480,14 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   ARRAY['voice_receptionist'],
   '{"type": "object", "properties": {"auto_sort": {"type": "boolean"}, "categories": {"type": "array", "items": {"type": "string"}}, "auto_draft": {"type": "boolean"}, "auto_send": {"type": "boolean"}, "require_approval": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
   '{"auto_sort": true, "categories": ["sales", "support", "urgent", "spam"], "auto_draft": true, "auto_send": false, "require_approval": true, "ai_powered": true, "template_id": "", "forward_to": []}'::jsonb
+),
+
+-- Service 15: Email Multi-Language Support
+('email_multilanguage', 'Email Multi-Language Support', 'Read and respond to emails in Spanish, French, German, Chinese, and more. Just $0.10/email extra.', 'communication', 'standard', 'Languages', true,
+  '{"type": "per_email", "price": 0.10}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"enabled_languages": {"type": "array", "items": {"type": "string", "enum": ["es", "fr", "de", "it", "pt", "zh", "ja", "ko", "ar", "hi"]}}, "auto_detect": {"type": "boolean"}, "auto_translate": {"type": "boolean"}}}'::jsonb,
+  '{"enabled_languages": ["es", "fr"], "auto_detect": true, "auto_translate": true}'::jsonb
 );
 
 -- ========================================
