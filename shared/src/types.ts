@@ -11,6 +11,9 @@ export interface User {
   stripeCustomerId?: string;
   currentPlan: string;
   monthlyCallLimit: number;
+  walletBalanceUsd: number;
+  lowBalanceThresholdUsd: number;
+  lowBalanceNotifiedAt?: string;
 }
 
 export interface Agent {
@@ -69,6 +72,40 @@ export interface BillingCycle {
   status: 'pending' | 'paid' | 'failed';
   createdAt: string;
 }
+
+// Wallet types
+export interface WalletTransaction {
+  id: string;
+  userId: string;
+  transactionType: 'deposit' | 'withdrawal' | 'refund' | 'adjustment';
+  amountUsd: number;
+  balanceBeforeUsd: number;
+  balanceAfterUsd: number;
+  description: string;
+  metadata?: Record<string, any>;
+  stripePaymentIntentId?: string;
+  stripeChargeId?: string;
+  relatedCallId?: string;
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  createdAt: string;
+}
+
+export interface WalletTopUpOption {
+  amount: number;
+  label: string;
+  popular?: boolean;
+}
+
+export const WALLET_TOPUP_OPTIONS: WalletTopUpOption[] = [
+  { amount: 25, label: '$25' },
+  { amount: 50, label: '$50', popular: true },
+  { amount: 100, label: '$100' },
+  { amount: 200, label: '$200' },
+  { amount: 500, label: '$500' },
+];
+
+export const MIN_WALLET_BALANCE = 2.00; // Minimum balance required to make calls
+export const DEFAULT_LOW_BALANCE_THRESHOLD = 20.00; // Default threshold for low balance warnings
 
 // Tool integration types
 export interface ToolIntegration {
@@ -192,4 +229,27 @@ export function calculateMonthlyBill(callCount: number): number {
   const tier = getPricingTier(callCount);
   const usageCharges = callCount * tier.pricePerCall;
   return PLATFORM_FEE + usageCharges;
+}
+
+// Wallet helper functions
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+export function isLowBalance(balance: number, threshold: number = DEFAULT_LOW_BALANCE_THRESHOLD): boolean {
+  return balance < threshold;
+}
+
+export function hasMinimumBalance(balance: number): boolean {
+  return balance >= MIN_WALLET_BALANCE;
+}
+
+export function estimateCallsRemaining(walletBalance: number, avgCallCost: number = 1.50): number {
+  if (avgCallCost === 0) return 0;
+  return Math.floor(walletBalance / avgCallCost);
 }

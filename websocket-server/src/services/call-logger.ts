@@ -83,17 +83,17 @@ export class CallLogger {
 
   async calculateCallCost(twilioCallSid: string) {
     try {
-      // Get call duration
+      // Get call duration and user_id
       const { data: call } = await supabase
         .from('calls')
-        .select('duration_seconds')
+        .select('duration_seconds, user_id, id')
         .eq('twilio_call_sid', twilioCallSid)
         .single();
 
       if (!call || !call.duration_seconds) return;
 
       const durationMinutes = call.duration_seconds / 60;
-      
+
       // Calculate costs
       const grokCost = durationMinutes * 0.05; // $0.05 per minute
       const twilioCost = durationMinutes * 0.013; // ~$0.013 per minute
@@ -108,8 +108,40 @@ export class CallLogger {
       if (error) throw error;
 
       logger.info(`Calculated cost for call ${twilioCallSid}: $${totalCost.toFixed(4)}`);
+
+      // Deduct cost from user's wallet
+      if (call.user_id) {
+        await this.deductFromWallet(call.user_id, totalCost, twilioCallSid, call.id);
+      }
     } catch (error) {
       logger.error(`Failed to calculate cost for ${twilioCallSid}:`, error);
+    }
+  }
+
+  async deductFromWallet(userId: string, amount: number, twilioCallSid: string, callId: string) {
+    try {
+      // Use the database function to deduct from wallet
+      const { data, error } = await supabase.rpc('deduct_from_wallet', {
+        p_user_id: userId,
+        p_amount: amount,
+        p_description: `Call cost - ${twilioCallSid}`,
+        p_call_id: callId,
+      });
+
+      if (error) {
+        logger.error(`Failed to deduct wallet balance for user ${userId}:`, error);
+        return;
+      }
+
+      if (data && !data.success) {
+        logger.warn(`Insufficient balance for user ${userId}: ${data.error}`);
+        // Could send notification to user here
+        return;
+      }
+
+      logger.info(`Deducted $${amount.toFixed(4)} from wallet for user ${userId} (Call: ${twilioCallSid})`);
+    } catch (error) {
+      logger.error(`Error deducting from wallet for user ${userId}:`, error);
     }
   }
 }
