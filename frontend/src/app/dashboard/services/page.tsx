@@ -10,9 +10,12 @@ import {
   Phone,
   MessageSquare,
   PhoneMissed,
+  Mail,
   Loader2,
   Settings,
-  Sparkles
+  Sparkles,
+  CheckCircle2,
+  Circle
 } from 'lucide-react';
 import Link from 'next/link';
 
@@ -94,7 +97,6 @@ export default function ServicesPage() {
 
   const handleToggleService = async (service: Service) => {
     setToggling(service.id);
-
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
@@ -125,7 +127,7 @@ export default function ServicesPage() {
       await loadServices();
     } catch (error: any) {
       console.error('Error toggling service:', error);
-      alert(`Failed to ${userServices.find(us => us.serviceId === service.id)?.enabled ? 'disable' : 'enable'} service: ${error.message}`);
+      alert(`Error: ${error.message}`);
     } finally {
       setToggling(null);
     }
@@ -133,10 +135,11 @@ export default function ServicesPage() {
 
   const getServiceIcon = (iconName?: string) => {
     switch (iconName) {
-      case 'Phone': return <Phone className="h-6 w-6" />;
-      case 'MessageSquare': return <MessageSquare className="h-6 w-6" />;
-      case 'PhoneMissed': return <PhoneMissed className="h-6 w-6" />;
-      default: return <Sparkles className="h-6 w-6" />;
+      case 'Phone': return <Phone className="h-8 w-8" />;
+      case 'MessageSquare': return <MessageSquare className="h-8 w-8" />;
+      case 'PhoneMissed': return <PhoneMissed className="h-8 w-8" />;
+      case 'Mail': return <Mail className="h-8 w-8" />;
+      default: return <Sparkles className="h-8 w-8" />;
     }
   };
 
@@ -145,25 +148,32 @@ export default function ServicesPage() {
     return userService?.enabled || false;
   };
 
-  const getCategoryName = (category: string) => {
-    const names: Record<string, string> = {
-      core: 'Core Services',
-      communication: 'Communication',
-      intelligence: 'Analytics & Intelligence',
-      automation: 'Automation',
-      integration: 'Integrations',
-      enterprise: 'Enterprise',
-    };
-    return names[category] || category;
+  const formatPricing = (service: Service) => {
+    if (service.usageBased && service.usagePriceModel) {
+      const price = formatCurrency(service.usagePriceModel.price);
+      const unit = service.usagePriceModel.type.replace('per_', '');
+      return `${price}/${unit}`;
+    }
+    if (service.basePriceUsd > 0) {
+      return `${formatCurrency(service.basePriceUsd)}/month`;
+    }
+    return 'Free';
   };
 
-  const groupedServices = services.reduce((acc, service) => {
-    if (!acc[service.category]) {
-      acc[service.category] = [];
-    }
-    acc[service.category].push(service);
-    return acc;
-  }, {} as Record<string, Service[]>);
+  // Show only the 5 core services by default
+  const coreServiceKeys = [
+    'voice_receptionist',
+    'sms_autoresponder_standalone',
+    'sms_autoresponder_bundled',
+    'missed_call_responder',
+    'email_assistant_standalone',
+    'email_assistant_bundled'
+  ];
+
+  const coreServices = services.filter(s => coreServiceKeys.includes(s.serviceKey));
+  const addOnServices = services.filter(s => !coreServiceKeys.includes(s.serviceKey));
+
+  const [showAddOns, setShowAddOns] = useState(false);
 
   if (loading) {
     return (
@@ -174,119 +184,208 @@ export default function ServicesPage() {
   }
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Services</h1>
-        <p className="text-muted-foreground">
-          Enable only the services you need. Pay only for what you use.
+    <div className="container mx-auto p-6 max-w-7xl space-y-8">
+      {/* Header */}
+      <div className="text-center space-y-2">
+        <h1 className="text-4xl font-bold">Pick What You Need</h1>
+        <p className="text-xl text-muted-foreground">
+          Enable services with one click. Disable anytime. Pay only for what you use.
         </p>
       </div>
 
-      {Object.entries(groupedServices).map(([category, categoryServices]) => (
-        <div key={category} className="space-y-4">
-          <h2 className="text-xl font-semibold">{getCategoryName(category)}</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {categoryServices.map((service) => {
-              const enabled = isServiceEnabled(service.id);
-              const isToggling = toggling === service.id;
+      {/* Core Services */}
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-semibold mb-2">Core Services</h2>
+          <p className="text-muted-foreground">Pick the services your business needs</p>
+        </div>
 
-              return (
-                <Card
-                  key={service.id}
-                  className={`p-6 ${enabled ? 'border-primary bg-primary/5' : ''}`}
-                >
-                  <div className="space-y-4">
-                    {/* Header */}
-                    <div className="flex items-start justify-between">
-                      <div className="flex items-center gap-3">
-                        <div className={`p-2 rounded-lg ${enabled ? 'bg-primary text-primary-foreground' : 'bg-muted'}`}>
-                          {getServiceIcon(service.icon)}
-                        </div>
-                        <div>
-                          <h3 className="font-semibold">{service.name}</h3>
-                          {service.isBeta && (
-                            <span className="text-xs bg-blue-100 text-blue-600 px-2 py-0.5 rounded-full">
-                              Beta
-                            </span>
-                          )}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {coreServices.map((service) => {
+            const enabled = isServiceEnabled(service.id);
+            const isToggling = toggling === service.id;
+
+            return (
+              <Card
+                key={service.id}
+                className={`p-8 transition-all ${
+                  enabled
+                    ? 'border-2 border-green-500 bg-green-50/50'
+                    : 'hover:border-gray-300'
+                }`}
+              >
+                <div className="space-y-6">
+                  {/* Icon and Name */}
+                  <div className="flex items-start justify-between">
+                    <div className="flex items-center gap-4">
+                      <div className={`p-3 rounded-xl ${
+                        enabled ? 'bg-green-500 text-white' : 'bg-gray-100'
+                      }`}>
+                        {getServiceIcon(service.icon)}
+                      </div>
+                      <div>
+                        <h3 className="text-xl font-semibold flex items-center gap-2">
+                          {service.name}
+                          {enabled && <CheckCircle2 className="h-5 w-5 text-green-500" />}
+                        </h3>
+                        <div className="text-2xl font-bold text-primary mt-1">
+                          {formatPricing(service)}
                         </div>
                       </div>
-                      <Switch
-                        checked={enabled}
-                        onCheckedChange={() => handleToggleService(service)}
-                        disabled={isToggling}
-                      />
                     </div>
+                  </div>
 
-                    {/* Description */}
-                    <p className="text-sm text-muted-foreground">
-                      {service.description}
-                    </p>
+                  {/* Description */}
+                  <p className="text-base text-gray-700 leading-relaxed">
+                    {service.description}
+                  </p>
 
-                    {/* Pricing */}
-                    <div className="text-sm">
-                      {service.basePriceUsd > 0 && (
-                        <div className="text-muted-foreground">
-                          Base: {formatCurrency(service.basePriceUsd)}/month
+                  {/* Action */}
+                  <div className="pt-4">
+                    {enabled ? (
+                      <div className="space-y-3">
+                        <div className="flex items-center gap-2 text-green-700 font-medium">
+                          <CheckCircle2 className="h-5 w-5" />
+                          Active and working
                         </div>
-                      )}
-                      {service.usageBased && service.usagePriceModel && (
-                        <div className="text-muted-foreground">
-                          Usage: {formatCurrency(service.usagePriceModel.price)} per {service.usagePriceModel.type.replace('per_', '')}
-                        </div>
-                      )}
-                    </div>
-
-                    {/* Status */}
-                    {enabled && (
-                      <div className="pt-4 border-t space-y-2">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="text-muted-foreground">Status</span>
-                          <span className="text-green-600 font-medium">Active</span>
-                        </div>
-                        <Link href={`/dashboard/services/${service.serviceKey}`}>
-                          <Button variant="outline" size="sm" className="w-full">
-                            <Settings className="mr-2 h-4 w-4" />
-                            Configure
+                        <div className="flex gap-2">
+                          <Link href={`/dashboard/services/${service.serviceKey}`} className="flex-1">
+                            <Button variant="outline" size="lg" className="w-full">
+                              <Settings className="mr-2 h-5 w-5" />
+                              Configure
+                            </Button>
+                          </Link>
+                          <Button
+                            variant="ghost"
+                            size="lg"
+                            onClick={() => handleToggleService(service)}
+                            disabled={isToggling}
+                            className="flex-1"
+                          >
+                            {isToggling ? (
+                              <Loader2 className="h-5 w-5 animate-spin" />
+                            ) : (
+                              'Disable'
+                            )}
                           </Button>
-                        </Link>
+                        </div>
                       </div>
-                    )}
-
-                    {/* Disabled state */}
-                    {!enabled && (
+                    ) : (
                       <Button
-                        variant="outline"
-                        size="sm"
-                        className="w-full"
+                        size="lg"
+                        className="w-full text-lg h-14"
                         onClick={() => handleToggleService(service)}
                         disabled={isToggling}
                       >
                         {isToggling ? (
                           <>
-                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            <Loader2 className="mr-2 h-5 w-5 animate-spin" />
                             Enabling...
                           </>
                         ) : (
-                          'Enable Service'
+                          <>
+                            Enable Now
+                          </>
                         )}
                       </Button>
                     )}
                   </div>
-                </Card>
-              );
-            })}
-          </div>
+                </div>
+              </Card>
+            );
+          })}
         </div>
-      ))}
+      </div>
 
-      {/* Empty state */}
-      {services.length === 0 && (
-        <Card className="p-12 text-center">
-          <Sparkles className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <p className="text-muted-foreground">No services available</p>
-        </Card>
+      {/* Add-ons (hidden by default) */}
+      {addOnServices.length > 0 && (
+        <div className="space-y-6 pt-8 border-t">
+          {!showAddOns ? (
+            <div className="text-center">
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => setShowAddOns(true)}
+                className="mx-auto"
+              >
+                Show Optional Add-ons ({addOnServices.length})
+              </Button>
+              <p className="text-sm text-muted-foreground mt-2">
+                Advanced features for power users
+              </p>
+            </div>
+          ) : (
+            <>
+              <div className="flex items-center justify-between">
+                <div>
+                  <h2 className="text-2xl font-semibold mb-2">Optional Add-ons</h2>
+                  <p className="text-muted-foreground">
+                    Enhance your services with these optional features
+                  </p>
+                </div>
+                <Button
+                  variant="ghost"
+                  onClick={() => setShowAddOns(false)}
+                >
+                  Hide
+                </Button>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                {addOnServices.map((service) => {
+                  const enabled = isServiceEnabled(service.id);
+                  const isToggling = toggling === service.id;
+
+                  return (
+                    <Card
+                      key={service.id}
+                      className={`p-6 ${enabled ? 'border-green-500 bg-green-50/30' : ''}`}
+                    >
+                      <div className="space-y-4">
+                        <div className="flex items-center justify-between">
+                          <div className={`p-2 rounded-lg ${enabled ? 'bg-green-500 text-white' : 'bg-gray-100'}`}>
+                            {getServiceIcon(service.icon)}
+                          </div>
+                          <Switch
+                            checked={enabled}
+                            onCheckedChange={() => handleToggleService(service)}
+                            disabled={isToggling}
+                          />
+                        </div>
+
+                        <div>
+                          <h3 className="font-semibold text-lg">{service.name}</h3>
+                          <div className="text-lg font-bold text-primary">
+                            {formatPricing(service)}
+                          </div>
+                        </div>
+
+                        <p className="text-sm text-gray-600">
+                          {service.description}
+                        </p>
+
+                        {enabled && (
+                          <Link href={`/dashboard/services/${service.serviceKey}`}>
+                            <Button variant="outline" size="sm" className="w-full">
+                              Configure
+                            </Button>
+                          </Link>
+                        )}
+                      </div>
+                    </Card>
+                  );
+                })}
+              </div>
+            </>
+          )}
+        </div>
       )}
+
+      {/* Help text */}
+      <div className="text-center pt-8 text-muted-foreground space-y-2">
+        <p className="text-lg">💡 All services work immediately when enabled</p>
+        <p className="text-sm">No setup required. Configure them later if you want to customize.</p>
+      </div>
     </div>
   );
 }
