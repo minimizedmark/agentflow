@@ -536,6 +536,38 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   ARRAY['auto_website'],
   '{"type": "object", "properties": {"update_requests_per_month": {"type": "number"}, "priority_support": {"type": "boolean"}, "content_refresh": {"type": "boolean"}, "image_optimization": {"type": "boolean"}, "backup_frequency": {"type": "string", "enum": ["daily", "weekly", "monthly"]}, "security_monitoring": {"type": "boolean"}}}'::jsonb,
   '{"update_requests_per_month": 5, "priority_support": false, "content_refresh": true, "image_optimization": true, "backup_frequency": "weekly", "security_monitoring": true}'::jsonb
+),
+
+-- Service 22: Review Management & Automation
+('review_management', 'Review Management & Automation', 'Automatically request reviews from happy customers, monitor all review platforms (Google, Yelp, Facebook), and AI responds to reviews. Get more 5-star reviews, boost local SEO.', 'marketing', 'standard', 'Star', true,
+  '{"type": "composite", "base_monthly": 20.00, "per_review_response": 0.50, "per_review_request": 0.25}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"auto_request_reviews": {"type": "boolean"}, "request_timing": {"type": "string", "enum": ["immediate", "1_day", "3_days", "1_week"]}, "platforms": {"type": "array", "items": {"type": "string", "enum": ["google", "yelp", "facebook", "tripadvisor", "healthgrades"]}}, "auto_respond": {"type": "boolean"}, "respond_to_positive": {"type": "boolean"}, "respond_to_negative": {"type": "boolean"}, "negative_alert_email": {"type": "string"}, "negative_alert_sms": {"type": "string"}, "response_tone": {"type": "string", "enum": ["professional", "friendly", "casual", "formal"]}}}'::jsonb,
+  '{"auto_request_reviews": true, "request_timing": "3_days", "platforms": ["google", "yelp", "facebook"], "auto_respond": true, "respond_to_positive": true, "respond_to_negative": true, "negative_alert_email": "", "negative_alert_sms": "", "response_tone": "professional"}'::jsonb
+),
+
+-- Service 23: Text-to-Pay / Payment Links
+('text_to_pay', 'Text-to-Pay & Payment Links', 'Send secure payment links via SMS or email. Customers pay with one click. Integrates with Stripe, Square, PayPal. Get paid faster - 80% reduction in accounts receivable.', 'payments', 'standard', 'CreditCard', true,
+  '{"type": "per_payment_link", "price": 0.50}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"payment_processor": {"type": "string", "enum": ["stripe", "square", "paypal", "none"]}, "auto_send_after_service": {"type": "boolean"}, "payment_reminder_schedule": {"type": "array", "items": {"type": "number"}}, "include_tip_option": {"type": "boolean"}, "default_tip_percentages": {"type": "array", "items": {"type": "number"}}, "send_via": {"type": "string", "enum": ["sms", "email", "both"]}, "auto_update_invoice": {"type": "boolean"}}}'::jsonb,
+  '{"payment_processor": "stripe", "auto_send_after_service": true, "payment_reminder_schedule": [1, 3, 7], "include_tip_option": false, "default_tip_percentages": [15, 18, 20], "send_via": "both", "auto_update_invoice": true}'::jsonb
+),
+
+-- Service 24: Lead Follow-up & Nurturing
+('lead_nurturing', 'Lead Follow-up & Nurturing', 'Automated lead nurturing sequences via SMS and email. AI qualifies leads, scores them hot/warm/cold, and follows up at optimal times. 45% increase in conversion ROI.', 'sales', 'standard', 'Target', false,
+  '{"type": "tiered", "base_monthly": 30.00, "included_leads": 100, "per_lead_overage": 0.30}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"auto_qualify": {"type": "boolean"}, "qualification_questions": {"type": "array", "items": {"type": "string"}}, "lead_scoring": {"type": "boolean"}, "hot_lead_threshold": {"type": "number"}, "nurture_sequences": {"type": "array", "items": {"type": "object"}}, "multi_channel": {"type": "boolean"}, "channels": {"type": "array", "items": {"type": "string", "enum": ["sms", "email", "call"]}}, "hot_lead_alert": {"type": "boolean"}}}'::jsonb,
+  '{"auto_qualify": true, "qualification_questions": ["When are you looking to book?", "What service are you interested in?"], "lead_scoring": true, "hot_lead_threshold": 80, "nurture_sequences": [], "multi_channel": true, "channels": ["sms", "email"], "hot_lead_alert": true}'::jsonb
+),
+
+-- Service 25: Broadcast Communications (Marketing)
+('broadcast_marketing', 'Broadcast Marketing (SMS & Email)', 'Send promotions, announcements, and campaigns to your customer list. Segment by service, last visit, or spend. A/B testing included. Max 4/month to prevent spam.', 'marketing', 'standard', 'Megaphone', true,
+  '{"type": "composite", "per_sms": 0.10, "per_email": 0.02}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"max_campaigns_per_month": {"type": "number"}, "segmentation_enabled": {"type": "boolean"}, "ab_testing": {"type": "boolean"}, "auto_opt_out": {"type": "boolean"}, "send_time_optimization": {"type": "boolean"}, "track_performance": {"type": "boolean"}, "compliance_monitoring": {"type": "boolean"}}}'::jsonb,
+  '{"max_campaigns_per_month": 4, "segmentation_enabled": true, "ab_testing": true, "auto_opt_out": true, "send_time_optimization": true, "track_performance": true, "compliance_monitoring": true}'::jsonb
 );
 
 -- ========================================
