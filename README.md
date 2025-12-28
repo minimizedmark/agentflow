@@ -8,8 +8,10 @@ Agent12 offers three independent services that can be enabled individually:
 
 ### Service 1: AI Voice Receptionist ✅
 - **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
-- **Pricing**: Usage-based - $0.063/minute (Grok AI $0.05/min + Twilio $0.013/min)
-- **Value**: Save ~$25/hour vs. hiring a receptionist
+- **Pricing**: $2.00 per minute
+- **Value**: Save ~$25/hour vs. hiring a receptionist who can't work 24/7
+- **Cost**: $0.063/minute (Grok AI $0.05/min + Twilio $0.013/min)
+- **Margin**: $1.937/minute profit
 - **Features**:
   - 🤖 Intelligent conversations powered by Grok AI
   - 📞 Twilio phone integration
@@ -214,7 +216,7 @@ All three services use the same Twilio phone number and are handled based on the
 Agent12 uses a **pay-per-use** pricing model - no monthly fees, only pay for what you use:
 
 ### Service Pricing
-- **AI Voice Receptionist**: $0.063/minute of call time
+- **AI Voice Receptionist**: $2.00 per minute of call time
 - **SMS Autoresponder**: $1.00 per response sent
 - **Missed Call Responder**: $1.50 per missed call
 

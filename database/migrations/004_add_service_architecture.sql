@@ -372,7 +372,7 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
 
 -- Service 1: AI Voice Receptionist
 ('voice_receptionist', 'AI Voice Receptionist', 'AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries.', 'core', 'standard', 'Phone', true,
-  '{"type": "per_minute", "price": 0.063}'::jsonb,
+  '{"type": "per_minute", "price": 2.00}'::jsonb,
   '{"type": "object", "properties": {"voice_model": {"type": "string", "enum": ["Ara", "Eve", "Leo"]}, "system_prompt": {"type": "string"}}}'::jsonb,
   '{"voice_model": "Ara", "system_prompt": "You are a helpful voice assistant."}'::jsonb
 ),
