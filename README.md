@@ -1,10 +1,46 @@
 # Agent12 - AI Voice Agent Platform
 
-Agent12 is a modular multi-service platform that helps small businesses automate customer communication. Choose only the services you need and pay only for what you use.
+## Build Your Stack. Pay for What You Use. Nothing More.
 
-## Services
+**We don't believe in gouging small businesses with forced bundles and features you'll never use.**
 
-Agent12 offers four independent services that can be enabled individually:
+Agent12 is a modular platform built FOR small businesses, BY people who understand your needs. Pick the services that help YOUR business. Leave the rest. Add more when you're ready.
+
+**No contracts. No monthly minimums. No features you don't need.**
+
+Just honest, transparent automation that saves you money and helps you grow.
+
+## How It Works
+
+**1. Start Simple** - Pick one service that solves your biggest pain point
+**2. Add What Helps** - Enable more services when you're ready
+**3. Upgrade Smartly** - Add optional enhancements only if you need them
+**4. Pay As You Go** - Usage-based pricing. No waste.
+
+### Real Examples
+
+**🦷 Dental Office** might use:
+- AI Voice Receptionist with Industry Templates ($2.75/min)
+- Missed Call Responder ($1.50/call)
+- **Monthly cost**: ~$200-300 for 100 minutes of calls
+
+**🍕 Pizza Restaurant** might only need:
+- SMS Autoresponder Standalone ($1/message)
+- **Monthly cost**: ~$50-100 for 50-100 messages
+
+**🏠 Real Estate Agent** builds full stack:
+- AI Voice Receptionist ($2/min)
+- SMS Autoresponder Bundled ($0.50/message - 50% off!)
+- Email Assistant Bundled ($0.25/email - 50% off!)
+- **Saves 50%** on SMS and Email by bundling
+
+**No two businesses pay the same. Because no two businesses are the same.**
+
+---
+
+## Core Services
+
+Agent12 offers 5 core services. Pick what you need:
 
 ### Service 1: AI Voice Receptionist ✅
 - **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
