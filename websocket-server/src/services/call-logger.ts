@@ -1,5 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { logger } from '../utils/logger';
+import { SMSService } from './sms-service';
 
 const supabaseUrl = process.env.SUPABASE_URL || '';
 const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || '';
@@ -142,6 +143,49 @@ export class CallLogger {
       logger.info(`Deducted $${amount.toFixed(4)} from wallet for user ${userId} (Call: ${twilioCallSid})`);
     } catch (error) {
       logger.error(`Error deducting from wallet for user ${userId}:`, error);
+    }
+  }
+
+  async handleMissedCall(twilioCallSid: string, status: string) {
+    try {
+      // Check if call was not answered (missed, no-answer, busy, failed)
+      const missedStatuses = ['no-answer', 'busy', 'failed', 'canceled'];
+
+      if (!missedStatuses.includes(status)) {
+        return; // Not a missed call
+      }
+
+      // Get call details
+      const { data: call } = await supabase
+        .from('calls')
+        .select('id, user_id, from_number, to_number, agent_id')
+        .eq('twilio_call_sid', twilioCallSid)
+        .single();
+
+      if (!call || !call.user_id) {
+        logger.warn(`No call or user found for ${twilioCallSid}`);
+        return;
+      }
+
+      // Update call status to missed
+      await supabase
+        .from('calls')
+        .update({ status: 'missed' })
+        .eq('twilio_call_sid', twilioCallSid);
+
+      logger.info(`Detected missed call: ${twilioCallSid}`);
+
+      // Trigger missed call responder
+      const smsService = new SMSService();
+      await smsService.handleMissedCallResponder({
+        userId: call.user_id,
+        callId: call.id,
+        fromNumber: call.from_number,
+        toNumber: call.to_number,
+        callSid: twilioCallSid,
+      });
+    } catch (error) {
+      logger.error(`Error handling missed call ${twilioCallSid}:`, error);
     }
   }
 }

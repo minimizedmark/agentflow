@@ -6,6 +6,7 @@ import { logger } from './utils/logger';
 import { GrokVoiceConnection } from './services/grok-voice';
 import { TwilioService } from './services/twilio';
 import { CallLogger } from './services/call-logger';
+import { SMSService } from './services/sms-service';
 
 dotenv.config();
 
@@ -69,6 +70,9 @@ app.post('/api/voice/status', async (req, res) => {
       await callLogger.endCall(CallSid, duration);
     }
 
+    // Check for missed calls and trigger SMS responder
+    await callLogger.handleMissedCall(CallSid, CallStatus);
+
     res.sendStatus(200);
   } catch (error) {
     logger.error(`Error handling status update for ${CallSid}:`, error);
@@ -100,6 +104,65 @@ app.post('/api/voice/outbound', async (req, res) => {
   } catch (error) {
     logger.error('Error initiating outbound call:', error);
     res.status(500).json({ error: 'Failed to initiate call' });
+  }
+});
+
+// SMS webhook endpoint for incoming messages (Service 2: SMS Autoresponder)
+app.post('/api/sms/incoming', async (req, res) => {
+  const { MessageSid, From, To, Body } = req.body;
+
+  logger.info(`Incoming SMS: ${MessageSid} from ${From} to ${To}`);
+
+  try {
+    const smsService = new SMSService();
+
+    // Get user ID from phone number
+    const userId = await smsService.getUserByPhoneNumber(To);
+
+    if (!userId) {
+      logger.warn(`No user found for phone number ${To}`);
+      return res.sendStatus(200); // Still return 200 to Twilio
+    }
+
+    // Handle autoresponder
+    await smsService.handleAutoresponder({
+      userId,
+      fromNumber: From,
+      toNumber: To,
+      incomingMessage: Body,
+      twilioMessageSid: MessageSid,
+    });
+
+    res.sendStatus(200);
+  } catch (error) {
+    logger.error(`Error handling incoming SMS ${MessageSid}:`, error);
+    res.sendStatus(500);
+  }
+});
+
+// Endpoint to send SMS for missed calls (Service 3: Missed Call Responder)
+app.post('/api/sms/missed-call', async (req, res) => {
+  const { userId, callId, fromNumber, toNumber, callSid } = req.body;
+
+  if (!userId || !callId || !fromNumber || !toNumber || !callSid) {
+    return res.status(400).json({ error: 'Missing required parameters' });
+  }
+
+  try {
+    const smsService = new SMSService();
+
+    await smsService.handleMissedCallResponder({
+      userId,
+      callId,
+      fromNumber,
+      toNumber,
+      callSid,
+    });
+
+    res.json({ success: true });
+  } catch (error) {
+    logger.error('Error sending missed call SMS:', error);
+    res.status(500).json({ error: 'Failed to send SMS' });
   }
 });
 

@@ -379,14 +379,14 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
 
 -- Service 2: SMS Autoresponder
 ('sms_autoresponder', 'SMS Autoresponder', 'Automatically respond to incoming text messages with AI or custom templates.', 'communication', 'standard', 'MessageSquare', true,
-  '{"type": "per_sms", "price": 0.05}'::jsonb,
+  '{"type": "per_sms", "price": 1.00}'::jsonb,
   '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "template_id": {"type": "string"}, "ai_powered": {"type": "boolean"}}}'::jsonb,
   '{"auto_reply": true, "ai_powered": false}'::jsonb
 ),
 
 -- Service 3: Missed Call Responder
 ('missed_call_responder', 'Missed Call Responder', 'Automatically send SMS to callers when their call goes unanswered.', 'communication', 'standard', 'PhoneMissed', true,
-  '{"type": "per_sms", "price": 0.05}'::jsonb,
+  '{"type": "per_call", "price": 1.50}'::jsonb,
   '{"type": "object", "properties": {"enabled_hours": {"type": "string"}, "template_id": {"type": "string"}, "delay_seconds": {"type": "number"}}}'::jsonb,
   '{"enabled_hours": "24/7", "delay_seconds": 30}'::jsonb
 );

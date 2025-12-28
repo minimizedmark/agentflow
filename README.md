@@ -1,16 +1,52 @@
 # Agent12 - AI Voice Agent Platform
 
-Agent12 is an AI-powered voice agent platform that helps small businesses never miss a customer call. The platform uses advanced AI to handle phone calls, book appointments, and manage customer service 24/7.
+Agent12 is a modular multi-service platform that helps small businesses automate customer communication. Choose only the services you need and pay only for what you use.
 
-## Features
+## Services
 
-- 🤖 **AI Voice Agents**: Intelligent voice agents powered by Grok AI
-- 📞 **Twilio Integration**: Reliable phone call handling
-- 📊 **Call Analytics**: Track and analyze all your calls
-- 💰 **Usage-Based Pricing**: Pay only for what you use
-- 🏢 **Industry Templates**: Pre-configured agents for dental, HVAC, restaurants, salons, and more
-- 📅 **Calendar Integration**: Automatic appointment booking
-- 🔐 **Secure Authentication**: Built with Supabase Auth
+Agent12 offers three independent services that can be enabled individually:
+
+### Service 1: AI Voice Receptionist ✅
+- **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
+- **Pricing**: Usage-based - $0.063/minute (Grok AI $0.05/min + Twilio $0.013/min)
+- **Value**: Save ~$25/hour vs. hiring a receptionist
+- **Features**:
+  - 🤖 Intelligent conversations powered by Grok AI
+  - 📞 Twilio phone integration
+  - 📅 Automatic appointment booking
+  - 🏢 Industry-specific templates
+  - 📊 Call analytics and transcripts
+
+### Service 2: SMS Autoresponder ✅
+- **Description**: Automatically respond to incoming text messages with AI or custom templates
+- **Pricing**: $1.00 per response
+- **Value**: Instant customer engagement without manual effort
+- **Features**:
+  - 💬 Instant auto-replies to incoming texts
+  - 🤖 AI-powered intelligent responses
+  - 📝 Custom message templates
+  - ⏰ Configurable business hours
+  - 📱 SMS conversation tracking
+
+### Service 3: Missed Call Responder ✅
+- **Description**: Automatically send SMS to callers when their call goes unanswered
+- **Pricing**: $1.50 per call
+- **Value**: Never lose a customer to a competitor - worth every penny
+- **Features**:
+  - 📞 Detects missed/unanswered calls
+  - 💬 Sends automated SMS follow-up
+  - ⏱️ Configurable delay before sending
+  - 📝 Custom message templates
+  - 🔗 Links SMS to call records
+
+## Key Features
+
+- 🔧 **Modular Architecture**: Enable only the services you need
+- 💰 **Pay-per-Use**: No fixed costs, pay only for what you use
+- 💳 **Prepaid Wallet**: Add funds and track spending in real-time
+- 📊 **Analytics**: Track usage across all services
+- 🔐 **Secure**: Built with Supabase Auth and Row Level Security
+- 🎯 **Easy Setup**: Toggle services on/off with one click
 
 ## Tech Stack
 
@@ -146,27 +182,47 @@ npm start
 
 ## Twilio Configuration
 
-1. Set up a Twilio phone number
-2. Configure webhooks:
-   - Voice URL: `https://your-server.com/api/voice/incoming`
-   - Status Callback: `https://your-server.com/api/voice/status`
+### Phone Numbers
+1. Purchase a Twilio phone number with Voice and SMS capabilities
+2. Configure webhooks for each service:
+
+### Voice Webhooks (Service 1: AI Voice Receptionist)
+- Voice URL: `https://your-server.com/api/voice/incoming`
+- Status Callback: `https://your-server.com/api/voice/status`
+- Method: POST
+
+### SMS Webhooks (Service 2 & 3: SMS Services)
+- SMS URL: `https://your-server.com/api/sms/incoming`
+- Method: POST
+
+All three services use the same Twilio phone number and are handled based on the type of incoming request (voice vs SMS).
 
 ## Usage
 
-1. Sign up at `/signup`
-2. Create your first AI voice agent in the dashboard
-3. Configure the agent with industry template or custom prompt
-4. Get your dedicated phone number
-5. Start receiving calls!
+1. **Sign up** at `/signup`
+2. **Add funds** to your prepaid wallet
+3. **Enable services** you need in `/dashboard/services`
+4. **Configure each service**:
+   - AI Voice Receptionist: Create agent, set voice model and prompt
+   - SMS Autoresponder: Create templates, enable AI responses
+   - Missed Call Responder: Set delay time and message template
+5. **Get your phone number** and configure Twilio webhooks
+6. **Start serving customers** automatically!
 
 ## Pricing
 
-- **Platform Fee**: $50/month
-- **Call Pricing** (usage-based):
-  - 0-50 calls: $2.00/call
-  - 51-150 calls: $1.50/call
-  - 151-300 calls: $1.25/call
-  - 301+ calls: $1.00/call
+Agent12 uses a **pay-per-use** pricing model - no monthly fees, only pay for what you use:
+
+### Service Pricing
+- **AI Voice Receptionist**: $0.063/minute of call time
+- **SMS Autoresponder**: $1.00 per response sent
+- **Missed Call Responder**: $1.50 per missed call
+
+### Prepaid Wallet
+- Add funds to your wallet via Stripe
+- Usage is automatically deducted as you use services
+- Track spending in real-time from the dashboard
+- Never worry about surprise bills
 
 ## Development
 
