@@ -400,6 +400,70 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   NULL,
   '{"type": "object", "properties": {"enabled_hours": {"type": "string"}, "template_id": {"type": "string"}, "delay_seconds": {"type": "number"}}}'::jsonb,
   '{"enabled_hours": "24/7", "delay_seconds": 30}'::jsonb
+),
+
+-- Service 5: Appointment Reminders
+('appointment_reminders', 'Appointment Reminders', 'Automatically send reminder calls or SMS before scheduled appointments.', 'automation', 'standard', 'Calendar', true,
+  '{"type": "per_reminder", "price": 0.25}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"reminder_type": {"type": "string", "enum": ["sms", "call", "both"]}, "hours_before": {"type": "array", "items": {"type": "number"}}, "message_template": {"type": "string"}}}'::jsonb,
+  '{"reminder_type": "sms", "hours_before": [24, 2], "message_template": "Reminder: You have an appointment at {{time}} on {{date}}."}'::jsonb
+),
+
+-- Service 6: Call Recording & Transcription
+('call_recording', 'Call Recording & Transcription', 'Record all calls and get AI-powered transcripts with keyword tagging.', 'intelligence', 'premium', 'Mic', true,
+  '{"type": "per_call", "price": 0.50}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"auto_record": {"type": "boolean"}, "transcribe": {"type": "boolean"}, "retention_days": {"type": "number"}, "keyword_alerts": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
+  '{"auto_record": true, "transcribe": true, "retention_days": 30, "keyword_alerts": []}'::jsonb
+),
+
+-- Service 7: Voicemail to Email/SMS
+('voicemail_forwarding', 'Voicemail to Email/SMS', 'Forward voicemails to email with transcription or send as SMS.', 'communication', 'standard', 'Voicemail', true,
+  '{"type": "per_voicemail", "price": 0.10}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"forward_to_email": {"type": "boolean"}, "email_addresses": {"type": "array", "items": {"type": "string"}}, "forward_to_sms": {"type": "boolean"}, "sms_number": {"type": "string"}, "include_transcription": {"type": "boolean"}}}'::jsonb,
+  '{"forward_to_email": true, "email_addresses": [], "forward_to_sms": false, "sms_number": "", "include_transcription": true}'::jsonb
+),
+
+-- Service 8: Sentiment Analysis
+('sentiment_analysis', 'Sentiment Analysis', 'AI-powered analysis of customer sentiment during calls. Get alerts for negative interactions.', 'intelligence', 'premium', 'Brain', true,
+  '{"type": "per_call", "price": 0.10}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"alert_on_negative": {"type": "boolean"}, "alert_threshold": {"type": "number"}, "email_alerts": {"type": "boolean"}}}'::jsonb,
+  '{"alert_on_negative": true, "alert_threshold": -0.5, "email_alerts": true}'::jsonb
+),
+
+-- Service 9: Multi-language Support
+('multi_language', 'Multi-language Support', 'Enable your AI receptionist to speak multiple languages fluently.', 'core', 'premium', 'Languages', true,
+  '{"type": "per_minute", "price": 1.00}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"enabled_languages": {"type": "array", "items": {"type": "string", "enum": ["es", "fr", "de", "it", "pt", "zh", "ja", "ko"]}}, "auto_detect": {"type": "boolean"}}}'::jsonb,
+  '{"enabled_languages": ["es"], "auto_detect": true}'::jsonb
+),
+
+-- Service 10: Analytics Dashboard
+('analytics_dashboard', 'Analytics Dashboard Pro', 'Advanced analytics with custom reports, data exports, and insights.', 'intelligence', 'premium', 'BarChart', false,
+  '{"type": "monthly", "price": 15.00}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"export_format": {"type": "string", "enum": ["csv", "json", "pdf"]}, "report_frequency": {"type": "string", "enum": ["daily", "weekly", "monthly"]}, "custom_metrics": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
+  '{"export_format": "csv", "report_frequency": "weekly", "custom_metrics": []}'::jsonb
+),
+
+-- Service 11: CRM Integration
+('crm_integration', 'CRM Integration', 'Sync calls, messages, and customer data with Salesforce, HubSpot, or other CRMs.', 'integration', 'enterprise', 'Database', false,
+  '{"type": "monthly", "price": 25.00}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"crm_provider": {"type": "string", "enum": ["salesforce", "hubspot", "pipedrive", "zoho"]}, "sync_frequency": {"type": "string", "enum": ["realtime", "hourly", "daily"]}, "sync_fields": {"type": "array", "items": {"type": "string"}}}}'::jsonb,
+  '{"crm_provider": "salesforce", "sync_frequency": "realtime", "sync_fields": ["name", "phone", "email"]}'::jsonb
+),
+
+-- Service 12: Business Hours Routing
+('business_hours_routing', 'Business Hours Routing', 'Route calls differently based on business hours, holidays, and custom schedules.', 'automation', 'standard', 'Clock', true,
+  '{"type": "per_call", "price": 0.05}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"business_hours": {"type": "object"}, "holiday_schedule": {"type": "array"}, "after_hours_action": {"type": "string", "enum": ["voicemail", "forward", "custom_message"]}, "forward_number": {"type": "string"}}}'::jsonb,
+  '{"business_hours": {"mon-fri": "9am-5pm"}, "holiday_schedule": [], "after_hours_action": "voicemail", "forward_number": ""}'::jsonb
 );
 
 -- ========================================
