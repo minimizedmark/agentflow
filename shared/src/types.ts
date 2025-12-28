@@ -348,3 +348,137 @@ export function estimateCallsRemaining(walletBalance: number, avgCallCost: numbe
   if (avgCallCost === 0) return 0;
   return Math.floor(walletBalance / avgCallCost);
 }
+
+// ========================================
+// SERVICE ARCHITECTURE TYPES
+// ========================================
+
+export interface Service {
+  id: string;
+  serviceKey: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  category: 'core' | 'communication' | 'intelligence' | 'automation' | 'integration' | 'enterprise';
+  tier: 'free' | 'standard' | 'premium' | 'enterprise';
+  basePriceUsd: number;
+  usageBased: boolean;
+  usagePriceModel?: {
+    type: 'per_call' | 'per_sms' | 'per_minute' | 'per_month';
+    price: number;
+  };
+  version: string;
+  isAvailable: boolean;
+  isBeta: boolean;
+  requiresServices?: string[];
+  conflictsWith?: string[];
+  configSchema?: Record<string, any>;
+  defaultConfig?: Record<string, any>;
+  setupInstructions?: string;
+  documentationUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserService {
+  id: string;
+  userId: string;
+  serviceId: string;
+  enabled: boolean;
+  enabledAt?: string;
+  disabledAt?: string;
+  config: Record<string, any>;
+  lastUsedAt?: string;
+  usageCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ServiceUsageLog {
+  id: string;
+  userServiceId: string;
+  userId: string;
+  serviceId: string;
+  usageType: string;
+  quantity: number;
+  costUsd: number;
+  metadata?: Record<string, any>;
+  createdAt: string;
+}
+
+export interface SMSMessage {
+  id: string;
+  userId: string;
+  agentId?: string;
+  twilioMessageSid?: string;
+  direction: 'inbound' | 'outbound';
+  fromNumber: string;
+  toNumber: string;
+  body: string;
+  status: 'queued' | 'sent' | 'delivered' | 'failed' | 'received';
+  errorMessage?: string;
+  serviceKey?: string;
+  relatedCallId?: string;
+  inReplyTo?: string;
+  conversationId?: string;
+  isAutomated: boolean;
+  templateUsed?: string;
+  costUsd: number;
+  sentAt?: string;
+  deliveredAt?: string;
+  createdAt: string;
+}
+
+export interface SMSTemplate {
+  id: string;
+  userId: string;
+  agentId?: string;
+  name: string;
+  serviceKey: string;
+  messageTemplate: string;
+  isActive: boolean;
+  isDefault: boolean;
+  availableVariables?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Service configuration types
+export interface VoiceReceptionistConfig {
+  voiceModel: 'Ara' | 'Eve' | 'Leo';
+  systemPrompt: string;
+  language?: string;
+  enableRecording?: boolean;
+}
+
+export interface SMSAutoresponderConfig {
+  autoReply: boolean;
+  templateId?: string;
+  aiPowered: boolean;
+  responseDelay?: number; // seconds
+  enabledHours?: string; // e.g., "9am-5pm" or "24/7"
+}
+
+export interface MissedCallResponderConfig {
+  enabledHours: string; // e.g., "24/7" or "9am-5pm"
+  templateId?: string;
+  delaySeconds: number; // Wait before sending SMS
+  maxAttemptsBeforeSMS?: number; // How many rings before considered "missed"
+}
+
+// Helper functions for services
+export function isServiceEnabled(userServices: UserService[], serviceKey: string): boolean {
+  return userServices.some(us =>
+    us.enabled &&
+    // Would need to join with services table to check serviceKey
+    true
+  );
+}
+
+export function getServiceConfig<T = Record<string, any>>(
+  userServices: UserService[],
+  serviceKey: string
+): T | null {
+  const userService = userServices.find(us => us.enabled);
+  return userService ? (userService.config as T) : null;
+}
