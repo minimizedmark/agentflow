@@ -488,6 +488,14 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   NULL,
   '{"type": "object", "properties": {"enabled_languages": {"type": "array", "items": {"type": "string", "enum": ["es", "fr", "de", "it", "pt", "zh", "ja", "ko", "ar", "hi"]}}, "auto_detect": {"type": "boolean"}, "auto_translate": {"type": "boolean"}}}'::jsonb,
   '{"enabled_languages": ["es", "fr"], "auto_detect": true, "auto_translate": true}'::jsonb
+),
+
+-- Service 16: Auto-Invoicing & Payment Reminders (QuickBooks)
+('auto_invoicing_quickbooks', 'Auto-Invoicing & Payment Reminders', 'Automatically create invoices in QuickBooks after appointments. Auto-send payment reminders for overdue invoices. Get paid faster.', 'automation', 'standard', 'FileText', true,
+  '{"type": "per_invoice", "price": 1.50}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"auto_create_invoice": {"type": "boolean"}, "auto_send_invoice": {"type": "boolean"}, "payment_terms": {"type": "string", "enum": ["net15", "net30", "net60", "due_on_receipt"]}, "auto_reminders": {"type": "boolean"}, "reminder_schedule": {"type": "array", "items": {"type": "number"}}, "include_appointment_notes": {"type": "boolean"}}}'::jsonb,
+  '{"auto_create_invoice": true, "auto_send_invoice": false, "payment_terms": "net30", "auto_reminders": true, "reminder_schedule": [7, 14, 30], "include_appointment_notes": true}'::jsonb
 );
 
 -- ========================================
