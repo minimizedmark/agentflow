@@ -87,6 +87,12 @@ export interface WalletTransaction {
   stripeChargeId?: string;
   relatedCallId?: string;
   status: 'pending' | 'completed' | 'failed' | 'refunded';
+  notes?: string;
+  tags?: string[];
+  promoCodeId?: string;
+  isAutoReload?: boolean;
+  receiptUrl?: string;
+  receiptNumber?: string;
   createdAt: string;
 }
 
@@ -106,6 +112,95 @@ export const WALLET_TOPUP_OPTIONS: WalletTopUpOption[] = [
 
 export const MIN_WALLET_BALANCE = 2.00; // Minimum balance required to make calls
 export const DEFAULT_LOW_BALANCE_THRESHOLD = 20.00; // Default threshold for low balance warnings
+
+// Payment Methods
+export interface PaymentMethod {
+  id: string;
+  userId: string;
+  stripePaymentMethodId: string;
+  stripeCustomerId: string;
+  cardBrand?: string;
+  cardLast4?: string;
+  cardExpMonth?: number;
+  cardExpYear?: number;
+  billingName?: string;
+  billingEmail?: string;
+  billingAddress?: Record<string, any>;
+  isDefault: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Promo Codes
+export interface PromoCode {
+  id: string;
+  code: string;
+  description?: string;
+  creditAmountUsd: number;
+  maxUses?: number;
+  currentUses: number;
+  maxUsesPerUser: number;
+  validFrom: string;
+  validUntil?: string;
+  isActive: boolean;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PromoCodeRedemption {
+  id: string;
+  promoCodeId: string;
+  userId: string;
+  transactionId?: string;
+  creditAmountUsd: number;
+  redeemedAt: string;
+}
+
+// Notification Preferences
+export interface NotificationPreferences {
+  id: string;
+  userId: string;
+  emailOnDeposit: boolean;
+  emailOnWithdrawal: boolean;
+  emailOnLowBalance: boolean;
+  emailOnAutoReload: boolean;
+  emailOnRefund: boolean;
+  dailyDigestEnabled: boolean;
+  weeklyDigestEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationLog {
+  id: string;
+  userId: string;
+  notificationType: string;
+  channel: 'email' | 'sms' | 'push';
+  sentTo: string;
+  subject?: string;
+  message?: string;
+  status: 'sent' | 'failed' | 'pending';
+  metadata?: Record<string, any>;
+  sentAt: string;
+}
+
+// Spending Limits
+export interface SpendingLimits {
+  dailyLimitUsd?: number;
+  weeklyLimitUsd?: number;
+  monthlyLimitUsd?: number;
+  enabled: boolean;
+}
+
+// Auto Reload Settings
+export interface AutoReloadSettings {
+  enabled: boolean;
+  thresholdUsd: number;
+  amountUsd: number;
+  paymentMethodId?: string;
+}
 
 // Tool integration types
 export interface ToolIntegration {
