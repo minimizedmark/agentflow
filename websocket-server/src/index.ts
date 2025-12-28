@@ -14,10 +14,93 @@ const server = createServer(app);
 const wss = new WebSocketServer({ server });
 
 const PORT = process.env.WEBSOCKET_SERVER_PORT || 8080;
+const BASE_URL = process.env.BASE_URL || `http://localhost:${PORT}`;
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 // Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() });
+});
+
+// Twilio webhook endpoint for incoming calls
+app.post('/api/voice/incoming', async (req, res) => {
+  const { CallSid, From, To, Direction } = req.body;
+
+  logger.info(`Incoming call: ${CallSid} from ${From} to ${To}`);
+
+  try {
+    const twilioService = new TwilioService();
+    const callLogger = new CallLogger();
+
+    // Log the incoming call
+    await callLogger.startCall({
+      twilioCallSid: CallSid,
+      fromNumber: From,
+      toNumber: To,
+      direction: Direction || 'inbound',
+    });
+
+    // Generate TwiML with WebSocket stream
+    const websocketUrl = `wss://${BASE_URL.replace('http://', '').replace('https://', '')}/stream?callSid=${CallSid}`;
+    const twiml = twilioService.generateTwiML(websocketUrl);
+
+    res.type('text/xml');
+    res.send(twiml);
+  } catch (error) {
+    logger.error(`Error handling incoming call ${CallSid}:`, error);
+    res.status(500).send('Error processing call');
+  }
+});
+
+// Twilio webhook endpoint for call status updates
+app.post('/api/voice/status', async (req, res) => {
+  const { CallSid, CallStatus, CallDuration } = req.body;
+
+  logger.info(`Call status update: ${CallSid} - ${CallStatus}`);
+
+  try {
+    const callLogger = new CallLogger();
+
+    if (CallStatus === 'completed') {
+      const duration = parseInt(CallDuration, 10);
+      await callLogger.endCall(CallSid, duration);
+    }
+
+    res.sendStatus(200);
+  } catch (error) {
+    logger.error(`Error handling status update for ${CallSid}:`, error);
+    res.sendStatus(500);
+  }
+});
+
+// Endpoint to make outbound calls
+app.post('/api/voice/outbound', async (req, res) => {
+  const { to, from, agentId } = req.body;
+
+  if (!to || !from) {
+    return res.status(400).json({ error: 'Missing required parameters: to, from' });
+  }
+
+  try {
+    const twilioService = new TwilioService();
+    const webhookUrl = `${BASE_URL}/api/voice/incoming`;
+
+    const call = await twilioService.makeOutboundCall(to, from, webhookUrl);
+
+    logger.info(`Outbound call initiated: ${call.sid}`);
+
+    res.json({
+      success: true,
+      callSid: call.sid,
+      status: call.status,
+    });
+  } catch (error) {
+    logger.error('Error initiating outbound call:', error);
+    res.status(500).json({ error: 'Failed to initiate call' });
+  }
 });
 
 // WebSocket connection handler
