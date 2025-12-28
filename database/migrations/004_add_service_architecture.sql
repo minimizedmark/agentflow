@@ -496,6 +496,22 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   NULL,
   '{"type": "object", "properties": {"auto_create_invoice": {"type": "boolean"}, "auto_send_invoice": {"type": "boolean"}, "payment_terms": {"type": "string", "enum": ["net15", "net30", "net60", "due_on_receipt"]}, "auto_reminders": {"type": "boolean"}, "reminder_schedule": {"type": "array", "items": {"type": "number"}}, "include_appointment_notes": {"type": "boolean"}}}'::jsonb,
   '{"auto_create_invoice": true, "auto_send_invoice": false, "payment_terms": "net30", "auto_reminders": true, "reminder_schedule": [7, 14, 30], "include_appointment_notes": true}'::jsonb
+),
+
+-- Service 17: Restaurant Order Taking (Standalone)
+('restaurant_order_taking_standalone', 'Restaurant Order Taking (Standalone)', 'AI voice agent that answers phone calls and takes food orders perfectly. Integrates with your POS system. Never miss an order during rush hours.', 'industry', 'standard', 'UtensilsCrossed', true,
+  '{"type": "per_order", "price": 1.50}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"pos_integration": {"type": "string", "enum": ["square", "toast", "clover", "lightspeed", "none"]}, "menu_url": {"type": "string"}, "upsell_enabled": {"type": "boolean"}, "modify_enabled": {"type": "boolean"}, "special_requests": {"type": "boolean"}, "payment_by_phone": {"type": "boolean"}, "auto_confirm_order": {"type": "boolean"}, "send_confirmation_sms": {"type": "boolean"}}}'::jsonb,
+  '{"pos_integration": "none", "menu_url": "", "upsell_enabled": true, "modify_enabled": true, "special_requests": true, "payment_by_phone": false, "auto_confirm_order": false, "send_confirmation_sms": true}'::jsonb
+),
+
+-- Service 18: Restaurant Order Taking (Bundled with Voice Receptionist)
+('restaurant_order_taking_bundled', 'Restaurant Order Taking (Add-on)', 'AI phone order taking at 33% discount when bundled with AI Voice Receptionist. Perfect order accuracy, upselling, and POS integration.', 'industry', 'standard', 'UtensilsCrossed', true,
+  '{"type": "per_order", "price": 1.00}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"pos_integration": {"type": "string", "enum": ["square", "toast", "clover", "lightspeed", "none"]}, "menu_url": {"type": "string"}, "upsell_enabled": {"type": "boolean"}, "modify_enabled": {"type": "boolean"}, "special_requests": {"type": "boolean"}, "payment_by_phone": {"type": "boolean"}, "auto_confirm_order": {"type": "boolean"}, "send_confirmation_sms": {"type": "boolean"}}}'::jsonb,
+  '{"pos_integration": "none", "menu_url": "", "upsell_enabled": true, "modify_enabled": true, "special_requests": true, "payment_by_phone": false, "auto_confirm_order": false, "send_confirmation_sms": true}'::jsonb
 );
 
 -- ========================================
