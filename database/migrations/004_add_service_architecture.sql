@@ -464,6 +464,22 @@ INSERT INTO services (service_key, name, description, category, tier, icon, usag
   ARRAY['voice_receptionist'],
   '{"type": "object", "properties": {"business_hours": {"type": "object"}, "holiday_schedule": {"type": "array"}, "after_hours_action": {"type": "string", "enum": ["voicemail", "forward", "custom_message"]}, "forward_number": {"type": "string"}}}'::jsonb,
   '{"business_hours": {"mon-fri": "9am-5pm"}, "holiday_schedule": [], "after_hours_action": "voicemail", "forward_number": ""}'::jsonb
+),
+
+-- Service 13: Email Autoresponder (Standalone)
+('email_autoresponder_standalone', 'Email Autoresponder (Standalone)', 'Automatically respond to customer emails with AI or custom templates. Monitor your business email 24/7.', 'communication', 'standard', 'Mail', true,
+  '{"type": "per_email", "price": 0.50}'::jsonb,
+  NULL,
+  '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}, "categorize": {"type": "boolean"}}}'::jsonb,
+  '{"auto_reply": true, "ai_powered": false, "template_id": "", "forward_to": [], "categorize": true}'::jsonb
+),
+
+-- Service 14: Email Autoresponder (Bundled)
+('email_autoresponder_bundled', 'Email Autoresponder (Add-on)', 'Email autoresponder at 50% discount when bundled with AI Voice Receptionist.', 'communication', 'standard', 'Mail', true,
+  '{"type": "per_email", "price": 0.25}'::jsonb,
+  ARRAY['voice_receptionist'],
+  '{"type": "object", "properties": {"auto_reply": {"type": "boolean"}, "ai_powered": {"type": "boolean"}, "template_id": {"type": "string"}, "forward_to": {"type": "array", "items": {"type": "string"}}, "categorize": {"type": "boolean"}}}'::jsonb,
+  '{"auto_reply": true, "ai_powered": false, "template_id": "", "forward_to": [], "categorize": true}'::jsonb
 );
 
 -- ========================================
