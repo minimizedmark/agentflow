@@ -10,40 +10,51 @@ Agent12 offers three independent services that can be enabled individually:
 - **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
 - **Pricing**:
   - Base: $2.00 per minute
-  - With Industry Templates: +$0.75/minute (total $2.75/minute)
-- **Value**: Save ~$25/hour vs. hiring a receptionist who can't work 24/7
-- **Cost**: $0.063/minute (Grok AI $0.05/min + Twilio $0.013/min)
-- **Margin**:
-  - Base: $1.937/minute profit (~97%)
-  - With Templates: $2.687/minute profit (~98%)
+  - With Industry Templates: $2.75 per minute
+- **Value Proposition**:
+  - 💰 Hiring a receptionist costs ~$25/hour ($15-20/hr wage + taxes/benefits)
+  - ⏰ That receptionist works 8 hours/day, 5 days/week
+  - 🤖 Our AI works 24/7/365 - never calls in sick, takes vacation, or needs breaks
+  - 📊 At $2/min, even 30 minutes of calls per day ($60/day) is cheaper than a part-time employee
+  - 🎯 **Never miss a customer call again** - every missed call is a lost opportunity
 - **Features**:
   - 🤖 Intelligent conversations powered by Grok AI
   - 📞 Twilio phone integration
   - 📅 Automatic appointment booking
-  - 🏢 Industry-specific templates (optional +$0.75/min)
+  - 🏢 Industry-specific templates (dental, HVAC, restaurants, salons, etc.)
   - 📊 Call analytics and transcripts
 
 ### Service 2: SMS Autoresponder ✅
 - **Description**: Automatically respond to incoming text messages with AI or custom templates
 - **Pricing**: $1.00 per response
-- **Value**: Instant customer engagement without manual effort
+- **Value Proposition**:
+  - 👀 Someone has to monitor incoming messages constantly
+  - ✍️ Someone has to draft and send responses
+  - ⏱️ Average response time: 15-30 minutes (or hours after business hours)
+  - 💵 At $1/response, you're paying pennies for instant engagement
+  - 🎯 **Instant customer satisfaction** - no more "sorry for the delay" messages
 - **Features**:
-  - 💬 Instant auto-replies to incoming texts
+  - 💬 Instant auto-replies (seconds, not minutes)
   - 🤖 AI-powered intelligent responses
   - 📝 Custom message templates
-  - ⏰ Configurable business hours
-  - 📱 SMS conversation tracking
+  - ⏰ Works 24/7, even when you're closed
+  - 📱 Full SMS conversation tracking
 
 ### Service 3: Missed Call Responder ✅
 - **Description**: Automatically send SMS to callers when their call goes unanswered
 - **Pricing**: $1.50 per call
-- **Value**: Never lose a customer to a competitor - worth every penny
+- **Value Proposition**:
+  - 🏃 Customer calls you, doesn't reach you, calls your competitor next
+  - 💔 Losing ONE customer to a competitor costs you hundreds or thousands in lifetime value
+  - 📞 Most businesses convert 20-30% of callbacks into customers
+  - 💰 If your average customer is worth $200+, paying $1.50 to keep them is a no-brainer
+  - 🎯 **Never lose another customer to a competitor**
 - **Features**:
-  - 📞 Detects missed/unanswered calls
-  - 💬 Sends automated SMS follow-up
-  - ⏱️ Configurable delay before sending
+  - 📞 Automatic missed call detection
+  - 💬 Instant SMS follow-up
+  - ⏱️ Configurable delay (send immediately or wait 30 seconds)
   - 📝 Custom message templates
-  - 🔗 Links SMS to call records
+  - 🔗 Full call tracking and analytics
 
 ## Key Features
 
@@ -217,7 +228,11 @@ All three services use the same Twilio phone number and are handled based on the
 
 ## Pricing
 
-Agent12 uses a **pay-per-use** pricing model - no monthly fees, only pay for what you use:
+Agent12 uses **value-based pricing** - you pay based on the value you receive, not our costs.
+
+Our prices reflect what it's worth to never miss a customer, respond instantly to messages, and provide 24/7 service without hiring staff.
+
+**Pay-per-use model** - no monthly fees, no contracts, only pay for what you use:
 
 ### Service Pricing
 - **AI Voice Receptionist**:
