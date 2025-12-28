@@ -8,15 +8,19 @@ Agent12 offers three independent services that can be enabled individually:
 
 ### Service 1: AI Voice Receptionist ✅
 - **Description**: AI-powered voice agent that answers calls 24/7, books appointments, and handles customer inquiries
-- **Pricing**: $2.00 per minute
+- **Pricing**:
+  - Base: $2.00 per minute
+  - With Industry Templates: +$0.75/minute (total $2.75/minute)
 - **Value**: Save ~$25/hour vs. hiring a receptionist who can't work 24/7
 - **Cost**: $0.063/minute (Grok AI $0.05/min + Twilio $0.013/min)
-- **Margin**: $1.937/minute profit
+- **Margin**:
+  - Base: $1.937/minute profit (~97%)
+  - With Templates: $2.687/minute profit (~98%)
 - **Features**:
   - 🤖 Intelligent conversations powered by Grok AI
   - 📞 Twilio phone integration
   - 📅 Automatic appointment booking
-  - 🏢 Industry-specific templates
+  - 🏢 Industry-specific templates (optional +$0.75/min)
   - 📊 Call analytics and transcripts
 
 ### Service 2: SMS Autoresponder ✅
@@ -216,9 +220,21 @@ All three services use the same Twilio phone number and are handled based on the
 Agent12 uses a **pay-per-use** pricing model - no monthly fees, only pay for what you use:
 
 ### Service Pricing
-- **AI Voice Receptionist**: $2.00 per minute of call time
+- **AI Voice Receptionist**:
+  - Base: $2.00 per minute
+  - With Industry Templates: $2.75 per minute (+$0.75/min add-on)
 - **SMS Autoresponder**: $1.00 per response sent
 - **Missed Call Responder**: $1.50 per missed call
+
+**Industry Templates Available For:**
+- Dental Offices
+- HVAC Companies
+- Restaurants
+- Hair Salons & Spas
+- Law Firms
+- Real Estate Agencies
+- Medical Practices
+- And more...
 
 ### Prepaid Wallet
 - Add funds to your wallet via Stripe
