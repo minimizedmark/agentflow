@@ -29,7 +29,8 @@
     "concurrently": "^8.2.2"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=20.9.0",
+    "npm": ">=10.0.0"
   },
   "author": "Mark - Agent12 Platform",
   "license": "MIT"
