@@ -53,7 +53,7 @@ export async function GET() {
 
     // Calculate call metrics
     const callsLast24h = recentCalls?.length || 0;
-    const avgDuration = recentCalls?.reduce((acc, call) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
+    const avgDuration = recentCalls?.reduce((acc: number, call: any) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
 
     // Get top users by call count
     const userCallCounts = topUsers?.reduce((acc: any, call: any) => {
