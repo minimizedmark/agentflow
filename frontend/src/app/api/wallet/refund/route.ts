@@ -1,24 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@supabase/supabase-js';
-import Stripe from 'stripe';
-
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-06-20',
-});
-
-const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!,
-  {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-    },
-  }
-);
+import env from '@/lib/env';
 
 export async function POST(request: NextRequest) {
   try {
+    // Create clients at runtime, not at build time
+    const stripe = env.createStripeClient();
+    const supabaseAdmin = env.createSupabaseAdmin();
+
     const { transactionId, userId, reason } = await request.json();
 
     if (!transactionId || !userId) {

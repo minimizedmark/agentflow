@@ -141,6 +141,39 @@ export function getEnvInfo() {
   };
 }
 
+/**
+ * Create Supabase admin client (lazy)
+ * Use this for server-side API routes that need service role access
+ */
+export function createSupabaseAdmin() {
+  // Only import at runtime, not at build time
+  const { createClient } = require('@supabase/supabase-js');
+
+  return createClient(
+    supabaseConfig.url,
+    supabaseConfig.serviceRoleKey,
+    {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    }
+  );
+}
+
+/**
+ * Create Stripe client (lazy)
+ * Use this for server-side API routes that need Stripe access
+ */
+export function createStripeClient() {
+  // Only import at runtime, not at build time
+  const Stripe = require('stripe');
+
+  return new Stripe(stripeConfig.secretKey, {
+    apiVersion: '2024-06-20',
+  });
+}
+
 export default {
   supabase: supabaseConfig,
   stripe: stripeConfig,
@@ -148,4 +181,6 @@ export default {
   features,
   validate: validateRuntimeEnv,
   info: getEnvInfo,
+  createSupabaseAdmin,
+  createStripeClient,
 };
