@@ -5,7 +5,7 @@ import { isAdmin } from '@/lib/admin-auth';
 export default async function AdminLayout({
   children,
 }: {
-  children: React.Node;
+  children: React.ReactNode;
 }) {
   // Verify admin access
   const hasAccess = await isAdmin();
