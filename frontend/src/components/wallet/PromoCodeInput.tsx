@@ -5,7 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Loader2, Check, X } from 'lucide-react';
 import { formatCurrency } from '@shared/types';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 
 export function PromoCodeInput() {
   const [code, setCode] = useState('');

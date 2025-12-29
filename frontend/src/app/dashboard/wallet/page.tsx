@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/lib/supabase/client';
 import Link from 'next/link';
 import { Card } from '@/components/ui/card';
 import { WalletBalance } from '@/components/wallet/WalletBalance';
