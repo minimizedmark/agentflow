@@ -11,6 +11,9 @@ export interface User {
   stripeCustomerId?: string;
   currentPlan: string;
   monthlyCallLimit: number;
+  walletBalanceUsd: number;
+  lowBalanceThresholdUsd: number;
+  lowBalanceNotifiedAt?: string;
 }
 
 export interface Agent {
@@ -68,6 +71,135 @@ export interface BillingCycle {
   stripeInvoiceId?: string;
   status: 'pending' | 'paid' | 'failed';
   createdAt: string;
+}
+
+// Wallet types
+export interface WalletTransaction {
+  id: string;
+  userId: string;
+  transactionType: 'deposit' | 'withdrawal' | 'refund' | 'adjustment';
+  amountUsd: number;
+  balanceBeforeUsd: number;
+  balanceAfterUsd: number;
+  description: string;
+  metadata?: Record<string, any>;
+  stripePaymentIntentId?: string;
+  stripeChargeId?: string;
+  relatedCallId?: string;
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  notes?: string;
+  tags?: string[];
+  promoCodeId?: string;
+  isAutoReload?: boolean;
+  receiptUrl?: string;
+  receiptNumber?: string;
+  createdAt: string;
+}
+
+export interface WalletTopUpOption {
+  amount: number;
+  label: string;
+  popular?: boolean;
+}
+
+export const WALLET_TOPUP_OPTIONS: WalletTopUpOption[] = [
+  { amount: 25, label: '$25' },
+  { amount: 50, label: '$50', popular: true },
+  { amount: 100, label: '$100' },
+  { amount: 200, label: '$200' },
+  { amount: 500, label: '$500' },
+];
+
+export const MIN_WALLET_BALANCE = 2.00; // Minimum balance required to make calls
+export const DEFAULT_LOW_BALANCE_THRESHOLD = 20.00; // Default threshold for low balance warnings
+
+// Payment Methods
+export interface PaymentMethod {
+  id: string;
+  userId: string;
+  stripePaymentMethodId: string;
+  stripeCustomerId: string;
+  cardBrand?: string;
+  cardLast4?: string;
+  cardExpMonth?: number;
+  cardExpYear?: number;
+  billingName?: string;
+  billingEmail?: string;
+  billingAddress?: Record<string, any>;
+  isDefault: boolean;
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Promo Codes
+export interface PromoCode {
+  id: string;
+  code: string;
+  description?: string;
+  creditAmountUsd: number;
+  maxUses?: number;
+  currentUses: number;
+  maxUsesPerUser: number;
+  validFrom: string;
+  validUntil?: string;
+  isActive: boolean;
+  createdBy?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface PromoCodeRedemption {
+  id: string;
+  promoCodeId: string;
+  userId: string;
+  transactionId?: string;
+  creditAmountUsd: number;
+  redeemedAt: string;
+}
+
+// Notification Preferences
+export interface NotificationPreferences {
+  id: string;
+  userId: string;
+  emailOnDeposit: boolean;
+  emailOnWithdrawal: boolean;
+  emailOnLowBalance: boolean;
+  emailOnAutoReload: boolean;
+  emailOnRefund: boolean;
+  dailyDigestEnabled: boolean;
+  weeklyDigestEnabled: boolean;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface NotificationLog {
+  id: string;
+  userId: string;
+  notificationType: string;
+  channel: 'email' | 'sms' | 'push';
+  sentTo: string;
+  subject?: string;
+  message?: string;
+  status: 'sent' | 'failed' | 'pending';
+  metadata?: Record<string, any>;
+  sentAt: string;
+}
+
+// Spending Limits
+export interface SpendingLimits {
+  dailyLimitUsd?: number;
+  weeklyLimitUsd?: number;
+  monthlyLimitUsd?: number;
+  enabled: boolean;
+}
+
+// Auto Reload Settings
+export interface AutoReloadSettings {
+  enabled: boolean;
+  thresholdUsd: number;
+  amountUsd: number;
+  paymentMethodId?: string;
 }
 
 // Tool integration types
@@ -192,4 +324,161 @@ export function calculateMonthlyBill(callCount: number): number {
   const tier = getPricingTier(callCount);
   const usageCharges = callCount * tier.pricePerCall;
   return PLATFORM_FEE + usageCharges;
+}
+
+// Wallet helper functions
+export function formatCurrency(amount: number): string {
+  return new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
+
+export function isLowBalance(balance: number, threshold: number = DEFAULT_LOW_BALANCE_THRESHOLD): boolean {
+  return balance < threshold;
+}
+
+export function hasMinimumBalance(balance: number): boolean {
+  return balance >= MIN_WALLET_BALANCE;
+}
+
+export function estimateCallsRemaining(walletBalance: number, avgCallCost: number = 1.50): number {
+  if (avgCallCost === 0) return 0;
+  return Math.floor(walletBalance / avgCallCost);
+}
+
+// ========================================
+// SERVICE ARCHITECTURE TYPES
+// ========================================
+
+export interface Service {
+  id: string;
+  serviceKey: string;
+  name: string;
+  description?: string;
+  icon?: string;
+  category: 'core' | 'communication' | 'intelligence' | 'automation' | 'integration' | 'enterprise';
+  tier: 'free' | 'standard' | 'premium' | 'enterprise';
+  basePriceUsd: number;
+  usageBased: boolean;
+  usagePriceModel?: {
+    type: 'per_call' | 'per_sms' | 'per_minute' | 'per_month';
+    price: number;
+  };
+  version: string;
+  isAvailable: boolean;
+  isBeta: boolean;
+  requiresServices?: string[];
+  conflictsWith?: string[];
+  configSchema?: Record<string, any>;
+  defaultConfig?: Record<string, any>;
+  setupInstructions?: string;
+  documentationUrl?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface UserService {
+  id: string;
+  userId: string;
+  serviceId: string;
+  enabled: boolean;
+  enabledAt?: string;
+  disabledAt?: string;
+  config: Record<string, any>;
+  lastUsedAt?: string;
+  usageCount: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface ServiceUsageLog {
+  id: string;
+  userServiceId: string;
+  userId: string;
+  serviceId: string;
+  usageType: string;
+  quantity: number;
+  costUsd: number;
+  metadata?: Record<string, any>;
+  createdAt: string;
+}
+
+export interface SMSMessage {
+  id: string;
+  userId: string;
+  agentId?: string;
+  twilioMessageSid?: string;
+  direction: 'inbound' | 'outbound';
+  fromNumber: string;
+  toNumber: string;
+  body: string;
+  status: 'queued' | 'sent' | 'delivered' | 'failed' | 'received';
+  errorMessage?: string;
+  serviceKey?: string;
+  relatedCallId?: string;
+  inReplyTo?: string;
+  conversationId?: string;
+  isAutomated: boolean;
+  templateUsed?: string;
+  costUsd: number;
+  sentAt?: string;
+  deliveredAt?: string;
+  createdAt: string;
+}
+
+export interface SMSTemplate {
+  id: string;
+  userId: string;
+  agentId?: string;
+  name: string;
+  serviceKey: string;
+  messageTemplate: string;
+  isActive: boolean;
+  isDefault: boolean;
+  availableVariables?: string[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Service configuration types
+export interface VoiceReceptionistConfig {
+  voiceModel: 'Ara' | 'Eve' | 'Leo';
+  systemPrompt: string;
+  language?: string;
+  enableRecording?: boolean;
+}
+
+export interface SMSAutoresponderConfig {
+  autoReply: boolean;
+  templateId?: string;
+  aiPowered: boolean;
+  responseDelay?: number; // seconds
+  enabledHours?: string; // e.g., "9am-5pm" or "24/7"
+}
+
+export interface MissedCallResponderConfig {
+  enabledHours: string; // e.g., "24/7" or "9am-5pm"
+  templateId?: string;
+  delaySeconds: number; // Wait before sending SMS
+  maxAttemptsBeforeSMS?: number; // How many rings before considered "missed"
+}
+
+// Helper functions for services
+export function isServiceEnabled(userServices: UserService[], serviceKey: string): boolean {
+  return userServices.some(us =>
+    us.enabled &&
+    // Would need to join with services table to check serviceKey
+    true
+  );
+}
+
+export function getServiceConfig<T = Record<string, any>>(
+  userServices: UserService[],
+  serviceKey: string
+): T | null {
+  const userService = userServices.find(us => us.enabled);
+  return userService ? (userService.config as T) : null;
 }

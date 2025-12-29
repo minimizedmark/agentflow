@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { Phone, TrendingUp, DollarSign, Clock } from 'lucide-react'
 import { supabase } from '@/lib/supabase'
+import { WalletBalance } from '@/components/wallet/WalletBalance'
 
 export default function DashboardPage() {
   const [stats, setStats] = useState({
@@ -13,6 +14,9 @@ export default function DashboardPage() {
     avgDuration: 0,
   })
 
+  const [walletBalance, setWalletBalance] = useState(0)
+  const [lowBalanceThreshold, setLowBalanceThreshold] = useState(20)
+
   useEffect(() => {
     loadStats()
   }, [])
@@ -21,6 +25,18 @@ export default function DashboardPage() {
     try {
       const { data: { user } } = await supabase.auth.getUser()
       if (!user) return
+
+      // Load wallet balance
+      const { data: userData } = await supabase
+        .from('users')
+        .select('wallet_balance_usd, low_balance_threshold_usd')
+        .eq('id', user.id)
+        .single()
+
+      if (userData) {
+        setWalletBalance(userData.wallet_balance_usd)
+        setLowBalanceThreshold(userData.low_balance_threshold_usd)
+      }
 
       const startOfMonth = new Date()
       startOfMonth.setDate(1)
@@ -60,6 +76,12 @@ export default function DashboardPage() {
           Welcome back! Here's an overview of your voice agents.
         </p>
       </div>
+
+      <WalletBalance
+        balance={walletBalance}
+        lowBalanceThreshold={lowBalanceThreshold}
+        onTopUpSuccess={loadStats}
+      />
 
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-4">
         <Card>
