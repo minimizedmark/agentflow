@@ -43,10 +43,10 @@ export async function GET(
         .limit(10),
     ]);
 
-    const totalMinutes = calls?.reduce((sum, call) => sum + (call.duration_seconds || 0), 0) / 60;
+    const totalMinutes = calls?.reduce((sum: number, call: any) => sum + (call.duration_seconds || 0), 0) / 60;
     const totalSpent = transactions
-      ?.filter((t) => t.transaction_type === 'call_charge')
-      ?.reduce((sum, t) => sum + parseFloat(t.amount_usd || '0'), 0);
+      ?.filter((t: any) => t.transaction_type === 'call_charge')
+      ?.reduce((sum: number, t: any) => sum + parseFloat(t.amount_usd || '0'), 0);
 
     return NextResponse.json({
       user,

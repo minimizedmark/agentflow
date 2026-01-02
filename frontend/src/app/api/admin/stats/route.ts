@@ -53,10 +53,10 @@ export async function GET() {
 
     // Calculate call metrics
     const callsLast24h = recentCalls?.length || 0;
-    const avgDuration = recentCalls?.reduce((acc, call) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
+    const avgDuration = recentCalls?.reduce((acc: number, call: any) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
 
     // Get top users by call count
-    const userCallCounts = topUsers?.reduce((acc: any, call: any) => {
+    const userCallCounts = topUsers?.reduce((acc: Record<string, { userId: string; email: string; name: string; count: number }>, call: any) => {
       const userId = call.user_id;
       if (!acc[userId]) {
         acc[userId] = {
@@ -68,7 +68,7 @@ export async function GET() {
       }
       acc[userId].count++;
       return acc;
-    }, {});
+    }, {} as Record<string, { userId: string; email: string; name: string; count: number }>);
 
     const topUsersList = Object.values(userCallCounts || {})
       .sort((a: any, b: any) => b.count - a.count)
