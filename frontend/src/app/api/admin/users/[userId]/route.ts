@@ -2,6 +2,41 @@ import { NextRequest, NextResponse } from 'next/server';
 import { requireAdmin, logAdminActivity } from '@/lib/admin-auth';
 import env from '@/lib/env';
 
+// Database types (snake_case as returned by Supabase)
+interface DbCall {
+  id: string;
+  agent_id?: string;
+  user_id?: string;
+  twilio_call_sid: string;
+  from_number: string;
+  to_number: string;
+  direction: 'inbound' | 'outbound';
+  status: 'initiated' | 'ringing' | 'in-progress' | 'completed' | 'failed';
+  duration_seconds?: number;
+  recording_url?: string;
+  transcript?: string;
+  cost_usd: number;
+  started_at: string;
+  ended_at?: string;
+  created_at: string;
+}
+
+interface DbWalletTransaction {
+  id: string;
+  user_id: string;
+  transaction_type: 'deposit' | 'withdrawal' | 'refund' | 'adjustment' | 'call_charge';
+  amount_usd: string | number;
+  balance_before_usd: number;
+  balance_after_usd: number;
+  description: string;
+  metadata?: Record<string, any>;
+  stripe_payment_intent_id?: string;
+  stripe_charge_id?: string;
+  related_call_id?: string;
+  status: 'pending' | 'completed' | 'failed' | 'refunded';
+  created_at: string;
+}
+
 // GET - Get single user details
 export async function GET(
   request: NextRequest,
@@ -43,10 +78,10 @@ export async function GET(
         .limit(10),
     ]);
 
-    const totalMinutes = calls?.reduce((sum: number, call: any) => sum + (call.duration_seconds || 0), 0) / 60;
+    const totalMinutes = calls?.reduce((sum: number, call: DbCall) => sum + (call.duration_seconds || 0), 0) / 60;
     const totalSpent = transactions
-      ?.filter((t: any) => t.transaction_type === 'call_charge')
-      ?.reduce((sum: number, t: any) => sum + parseFloat(t.amount_usd || '0'), 0);
+      ?.filter((t: DbWalletTransaction) => t.transaction_type === 'call_charge')
+      ?.reduce((sum: number, t: DbWalletTransaction) => sum + parseFloat(t.amount_usd.toString()), 0);
 
     return NextResponse.json({
       user,

@@ -2,6 +2,39 @@ import { NextResponse } from 'next/server';
 import { requireAdmin } from '@/lib/admin-auth';
 import env from '@/lib/env';
 
+// Database types (snake_case as returned by Supabase)
+interface DbCall {
+  id: string;
+  agent_id?: string;
+  user_id?: string;
+  twilio_call_sid: string;
+  from_number: string;
+  to_number: string;
+  direction: 'inbound' | 'outbound';
+  status: 'initiated' | 'ringing' | 'in-progress' | 'completed' | 'failed';
+  duration_seconds?: number;
+  recording_url?: string;
+  transcript?: string;
+  cost_usd: number;
+  started_at: string;
+  ended_at?: string;
+  created_at: string;
+}
+
+interface DbCallWithUser extends DbCall {
+  users?: {
+    email?: string;
+    name?: string;
+  };
+}
+
+interface UserCallSummary {
+  userId: string;
+  email: string;
+  name: string;
+  count: number;
+}
+
 export async function GET() {
   try {
     // Verify admin authentication
@@ -53,25 +86,27 @@ export async function GET() {
 
     // Calculate call metrics
     const callsLast24h = recentCalls?.length || 0;
-    const avgDuration = recentCalls?.reduce((acc: number, call: any) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
+    const avgDuration = recentCalls?.reduce((acc: number, call: DbCall) => acc + (call.duration_seconds || 0), 0) / (callsLast24h || 1);
 
     // Get top users by call count
-    const userCallCounts = topUsers?.reduce((acc: Record<string, { userId: string; email: string; name: string; count: number }>, call: any) => {
+    const userCallCounts = topUsers?.reduce((acc: Record<string, UserCallSummary>, call: DbCallWithUser) => {
       const userId = call.user_id;
+      if (!userId) return acc;
+      
       if (!acc[userId]) {
         acc[userId] = {
           userId,
-          email: call.users?.email,
-          name: call.users?.name,
+          email: call.users?.email || '',
+          name: call.users?.name || '',
           count: 0,
         };
       }
       acc[userId].count++;
       return acc;
-    }, {} as Record<string, { userId: string; email: string; name: string; count: number }>);
+    }, {} as Record<string, UserCallSummary>);
 
-    const topUsersList = Object.values(userCallCounts || {})
-      .sort((a: any, b: any) => b.count - a.count)
+    const topUsersList = (Object.values(userCallCounts || {}) as UserCallSummary[])
+      .sort((a: UserCallSummary, b: UserCallSummary) => b.count - a.count)
       .slice(0, 5);
 
     return NextResponse.json({
