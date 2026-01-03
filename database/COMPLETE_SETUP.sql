@@ -21,7 +21,9 @@
 -- Enable UUID extension
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
 
--- Enable pg_cron for scheduled jobs (if available in your Supabase plan)
+-- Enable pg_cron for scheduled jobs
+-- NOTE: pg_cron is only available on Supabase Pro plan and above (not free tier)
+-- Uncomment the line below if you're on a paid plan and need scheduled jobs
 -- CREATE EXTENSION IF NOT EXISTS pg_cron;
 
 -- ============================================================================
@@ -448,6 +450,8 @@ CREATE POLICY "Admins can manage system settings" ON system_settings
 -- ============================================================================
 -- PART 10: SEED DATA (OPTIONAL)
 -- ============================================================================
+-- NOTE: These are example/default pricing values for development and testing.
+-- Update these values for your production environment based on your actual costs.
 
 -- Insert default services
 INSERT INTO services (slug, name, category, description, pricing_model, base_price_usd) VALUES

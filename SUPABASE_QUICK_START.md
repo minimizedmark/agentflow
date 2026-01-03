@@ -16,6 +16,9 @@ This guide will help you set up a Supabase database so you can run through the s
 5. Fill in the details:
    - **Name**: AgentFlow (or whatever you prefer)
    - **Database Password**: Choose a strong password (save this!)
+     - Minimum 12 characters recommended
+     - Include uppercase, lowercase, numbers, and symbols
+     - Example: `MyAgentFlow2024!@#`
    - **Region**: Choose closest to you
    - **Pricing Plan**: Free tier is fine for testing
 6. Click "Create new project"
@@ -204,7 +207,7 @@ NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ### Where to Find Values in Supabase
 
 | Value | Location in Supabase Dashboard |
-|-------|-------------------------------|
+|-------|--------------------------------|
 | Project URL | Settings → API → Project URL |
 | anon/public key | Settings → API → Project API keys → anon/public |
 | service_role key | Settings → API → Project API keys → service_role |
