@@ -64,9 +64,15 @@ export const supabaseConfig = {
   }),
   // Check if we're using placeholder values (not configured)
   get isConfigured() {
-    return !this.url.includes('placeholder') && 
-           !this.anonKey.includes('placeholder') &&
-           this.url.includes('supabase.co');
+    // Check if we're using placeholder values
+    const hasPlaceholderUrl = this.url.includes('placeholder');
+    const hasPlaceholderKey = this.anonKey.includes('placeholder');
+    
+    // Check if the values look valid (not empty and not just the placeholder)
+    const hasValidUrl = this.url && this.url.length > 10 && !hasPlaceholderUrl;
+    const hasValidKey = this.anonKey && this.anonKey.length > 10 && !hasPlaceholderKey;
+    
+    return hasValidUrl && hasValidKey;
   }
 };
 
