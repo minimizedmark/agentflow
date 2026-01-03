@@ -61,7 +61,13 @@ export const supabaseConfig = {
     fallback: '',
     required: false, // Only needed server-side
     buildTimeSafe: true
-  })
+  }),
+  // Check if we're using placeholder values (not configured)
+  get isConfigured() {
+    return !this.url.includes('placeholder') && 
+           !this.anonKey.includes('placeholder') &&
+           this.url.includes('supabase.co');
+  }
 };
 
 // Stripe Configuration

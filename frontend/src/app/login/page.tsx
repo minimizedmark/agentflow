@@ -1,8 +1,9 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { signIn } from '@/lib/auth'
+import { isSupabaseConfigured, getSupabaseConfigError } from '@/lib/supabase/client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -12,14 +13,28 @@ export default function LoginPage() {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [configError, setConfigError] = useState<string | null>(null)
   const [formData, setFormData] = useState({
     email: '',
     password: '',
   })
 
+  // Check configuration on mount
+  useEffect(() => {
+    const error = getSupabaseConfigError();
+    setConfigError(error);
+  }, [])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setError('')
+
+    // Check for configuration error first
+    if (configError) {
+      setError(configError)
+      return
+    }
+
     setLoading(true)
 
     try {
@@ -30,7 +45,15 @@ export default function LoginPage() {
 
       router.push('/dashboard')
     } catch (err: any) {
-      setError(err.message || 'Failed to sign in')
+      // Provide more helpful error messages
+      let errorMessage = err.message || 'Failed to sign in'
+      
+      // Handle common fetch errors
+      if (errorMessage.includes('fetch') || errorMessage.includes('Failed to fetch')) {
+        errorMessage = 'Unable to connect to the server. Please check your internet connection and try again.'
+      }
+      
+      setError(errorMessage)
     } finally {
       setLoading(false)
     }
@@ -53,6 +76,16 @@ export default function LoginPage() {
           </CardDescription>
         </CardHeader>
         <CardContent>
+          {configError && (
+            <div className="mb-4 p-4 text-sm text-amber-800 bg-amber-50 rounded-md border border-amber-200">
+              <p className="font-semibold mb-1">⚠️ Configuration Required</p>
+              <p>{configError}</p>
+              <p className="mt-2 text-xs">
+                If you're the administrator, please set the required environment variables and restart the application.
+              </p>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="email">Email</Label>
@@ -64,6 +97,7 @@ export default function LoginPage() {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="you@example.com"
+                disabled={!!configError}
               />
             </div>
 
@@ -77,6 +111,7 @@ export default function LoginPage() {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Your password"
+                disabled={!!configError}
               />
             </div>
 
@@ -86,7 +121,7 @@ export default function LoginPage() {
               </div>
             )}
 
-            <Button type="submit" className="w-full" disabled={loading}>
+            <Button type="submit" className="w-full" disabled={loading || !!configError}>
               {loading ? 'Signing in...' : 'Sign in'}
             </Button>
           </form>
