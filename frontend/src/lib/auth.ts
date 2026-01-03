@@ -1,4 +1,4 @@
-import { supabase } from './supabase/client'
+import { supabase, isSupabaseConfigured, getSupabaseConfigError } from './supabase/client'
 
 export interface SignUpData {
   email: string
@@ -14,6 +14,12 @@ export interface SignInData {
 }
 
 export async function signUp(data: SignUpData) {
+  // Check if Supabase is configured
+  const configError = getSupabaseConfigError();
+  if (configError) {
+    throw new Error(configError);
+  }
+
   const { email, password, name, companyName, phone } = data
 
   const { data: authData, error } = await supabase.auth.signUp({
@@ -50,6 +56,12 @@ export async function signUp(data: SignUpData) {
 }
 
 export async function signIn(data: SignInData) {
+  // Check if Supabase is configured
+  const configError = getSupabaseConfigError();
+  if (configError) {
+    throw new Error(configError);
+  }
+
   const { email, password } = data
 
   const { data: authData, error } = await supabase.auth.signInWithPassword({
