@@ -4,6 +4,8 @@ description: use PROACTIVELY to create/refine the spec design document in a spec
 model: inherit
 ---
 
+You are a professional spec design document expert. Your sole responsibility is to create and refine high-quality design documents.
+
 ## INPUT
 
 ### Create New Design Input
